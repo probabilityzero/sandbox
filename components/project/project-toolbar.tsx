@@ -9,7 +9,8 @@ import {
   SettingsIcon, 
   CopyIcon,
   Share2Icon,
-  TrashIcon
+  TrashIcon,
+  RefreshCcw
 } from "lucide-react"
 import { 
   Tooltip,
@@ -25,6 +26,7 @@ interface ProjectToolbarProps {
   handleDownload: () => void
   handleCopyToClipboard: () => void
   setShowDeleteDialog: (show: boolean) => void
+  resetToDefault?: () => void
 }
 
 export function ProjectToolbar({
@@ -33,7 +35,8 @@ export function ProjectToolbar({
   saveProject,
   handleDownload,
   handleCopyToClipboard,
-  setShowDeleteDialog
+  setShowDeleteDialog,
+  resetToDefault
 }: ProjectToolbarProps) {
   return (
     <TooltipProvider>
@@ -121,6 +124,22 @@ export function ProjectToolbar({
           </TooltipTrigger>
           <TooltipContent>Project settings</TooltipContent>
         </Tooltip>
+        
+        {resetToDefault && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={resetToDefault}
+              >
+                <RefreshCcw className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Reset to default</TooltipContent>
+          </Tooltip>
+        )}
         
         <Tooltip>
           <TooltipTrigger asChild>

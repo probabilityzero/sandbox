@@ -20,6 +20,8 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
   const handleRefresh = () => {
     setKey(Date.now())
     setIsRunning(true)
+    setError(null)
+    setConsoleOutput([])
   }
   
   const toggleRunning = () => {
@@ -47,20 +49,43 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
           <style>
             html, body {
               margin: 0;
               padding: 0;
               overflow: hidden;
             }
+            body {
+              background-color: #f8f9fa;
+            }
+            body.dark {
+              background-color: #1a1a1a;
+            }
             canvas {
               display: block;
             }
+            .error-container {
+              color: #e53e3e;
+              padding: 20px;
+              font-family: monospace;
+              white-space: pre-wrap;
+            }
+            body.dark .error-container {
+              color: #fc8181;
+            }
           </style>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
         </head>
         <body>
           <script>
+            // Detect dark mode
+            function updateTheme() {
+              const isDark = window.parent.document.documentElement.classList.contains('dark');
+              document.body.classList.toggle('dark', isDark);
+            }
+            updateTheme();
+            
+            // Set up console capture
             (function() {
               const originalConsole = {
                 log: console.log,
@@ -96,42 +121,38 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
               ${code}
             } catch (error) {
               console.error('Error in sketch:', error.message);
-              document.body.innerHTML = '<div style="color: red; padding: 20px;"><h3>Error in sketch:</h3><pre>' + error.message + '</pre></div>';
+              const errorContainer = document.createElement('div');
+              errorContainer.className = 'error-container';
+              errorContainer.innerHTML = '<h3>Error in sketch:</h3><pre>' + error.message + '</pre>';
+              document.body.appendChild(errorContainer);
               window.parent.postMessage({ type: 'error', message: error.message }, '*');
             }
           </script>
         </body>
       </html>
-    `
+    `;
     
     if (iframeRef.current) {
-      const blob = new Blob([htmlTemplate], { type: "text/html" })
-      const blobURL = URL.createObjectURL(blob)
-      
-      iframeRef.current.src = blobURL
-      
-      iframeRef.current.onload = () => {
-        URL.revokeObjectURL(blobURL)
-      }
+      iframeRef.current.srcdoc = htmlTemplate;
     }
   }, [code, isRunning, key])
   
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === "error") {
-        setError(event.data.message)
+        setError(event.data.message);
       } else if (event.data && event.data.type === "console") {
-        setConsoleOutput((prev) => [...prev, { type: event.data.consoleType, message: event.data.message }])
+        setConsoleOutput((prev) => [...prev, { type: event.data.consoleType, message: event.data.message }]);
       }
-    }
+    };
 
-    window.addEventListener("message", handleMessage)
-    return () => window.removeEventListener("message", handleMessage)
-  }, [])
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
   
   return (
     <div className="flex flex-col h-full">
-      <div className={`flex-1 bg-muted ${showConsole ? "h-2/3" : "h-full"}`}>
+      <div className={`flex-1 ${showConsole ? "h-2/3" : "h-full"}`}>
         <iframe
           key={key}
           ref={iframeRef}

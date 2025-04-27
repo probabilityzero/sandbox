@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Editor from "@monaco-editor/react"
 import { LanguageType } from "@/types/project"
+import { useTheme } from "next-themes"
 
 export interface CodeEditorProps {
   code: string
@@ -13,6 +14,8 @@ export interface CodeEditorProps {
 
 export function CodeEditor({ code, language, onChange, readOnly = false }: CodeEditorProps) {
   const [mounted, setMounted] = useState(false)
+  const { resolvedTheme } = useTheme()
+  const isDarkTheme = resolvedTheme === "dark"
   
   useEffect(() => {
     setMounted(true)
@@ -26,7 +29,7 @@ export function CodeEditor({ code, language, onChange, readOnly = false }: CodeE
     switch (language) {
       case "javascript": return "javascript"
       case "python": return "python"
-      case "glsl": return "cpp"
+      case "glsl": return "cpp" 
       default: return "javascript"
     }
   }
@@ -36,7 +39,7 @@ export function CodeEditor({ code, language, onChange, readOnly = false }: CodeE
       height="100%"
       language={getLanguageId()}
       value={code}
-      theme="vs-dark"
+      theme={isDarkTheme ? "vs-dark" : "vs-light"}
       options={{
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
@@ -45,6 +48,14 @@ export function CodeEditor({ code, language, onChange, readOnly = false }: CodeE
         automaticLayout: true,
         tabSize: 2,
         wordWrap: "on",
+        lineNumbers: "on",
+        renderLineHighlight: "line",
+        hideCursorInOverviewRuler: true,
+        scrollbar: {
+          vertical: 'visible',
+          horizontalScrollbarSize: 10,
+          verticalScrollbarSize: 10,
+        }
       }}
       onChange={(value) => onChange(value || "")}
     />

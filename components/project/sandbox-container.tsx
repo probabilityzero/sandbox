@@ -31,6 +31,7 @@ import {
 import { SiJavascript, SiPython, SiWebgl } from "react-icons/si"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog"
 import { ProjectToolbar } from "./project-toolbar"
+import { getDefaultSketch } from "@/lib/default-sketch"
 
 export function EditorContainer() {
   const { 
@@ -50,6 +51,13 @@ export function EditorContainer() {
   const [projectName, setProjectName] = useState(currentProject?.name || "Untitled Project")
   const [isEditingName, setIsEditingName] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  
+  useEffect(() => {
+    if (currentProject && (!code || code.trim() === "")) {
+      const defaultCode = getDefaultSketch(language)
+      setCode(defaultCode)
+    }
+  }, [currentProject, code, language, setCode])
   
   useEffect(() => {
     if (currentProject?.name) {
@@ -129,6 +137,13 @@ export function EditorContainer() {
     }
   }
 
+  const handleResetToDefault = useCallback(() => {
+    if (language) {
+      const defaultCode = getDefaultSketch(language)
+      setCode(defaultCode)
+    }
+  }, [language, setCode])
+
   const renderPreview = () => {
     if (!showPreview) return null
     
@@ -200,6 +215,7 @@ export function EditorContainer() {
           handleDownload={handleDownload}
           handleCopyToClipboard={handleCopyToClipboard}
           setShowDeleteDialog={setShowDeleteDialog}
+          resetToDefault={handleResetToDefault}
         />
       </div>
 
