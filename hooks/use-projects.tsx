@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
-import type { Project, LanguageType } from "@/types/project"
+import type { Project, LanguageType, Version } from "@/types/project"
 import { db } from "@/lib/db"
 
 // Default code templates for different languages
@@ -40,6 +40,12 @@ void main() {
 }`
 }
 
+// Optional properties when creating a project
+type ProjectOptions = {
+  name?: string;
+  code?: string;
+}
+
 interface ProjectsContextType {
   projects: Project[]
   currentProject: Project | null
@@ -47,7 +53,7 @@ interface ProjectsContextType {
   language: LanguageType
   error: string | null
   setCode: (code: string) => void
-  createNewProject: (language: LanguageType) => void
+  createNewProject: (language: LanguageType, options?: ProjectOptions) => void
   saveProject: () => void
   changeProject: (id: number) => void
   updateProjectName: (id: number, name: string) => void
@@ -77,6 +83,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           })
           const latestProject = sortedProjects[0]
           setCurrentProject(latestProject)
+          
+          // Make sure to use the project's actual code, not just the template
           setCode(latestProject.code || '')
           setLanguage(latestProject.language)
         } else {
@@ -93,15 +101,24 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Create a new project
-  const createNewProject = async (lang: LanguageType) => {
+  const createNewProject = async (lang: LanguageType, options?: ProjectOptions) => {
     try {
+      const timestamp = new Date().toISOString();
+      const defaultCode = options?.code || DEFAULT_TEMPLATES[lang];
+      const projectName = options?.name || `New ${lang.charAt(0).toUpperCase() + lang.slice(1)} Project`;
+      
       const newProject: Project = {
-        name: `New ${lang.charAt(0).toUpperCase() + lang.slice(1)} Project`,
+        name: projectName,
         language: lang,
-        code: DEFAULT_TEMPLATES[lang],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        versions: [] // Add the missing versions property as an empty array
+        code: defaultCode,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        versions: [
+          {
+            code: defaultCode,
+            timestamp
+          }
+        ]
       }
       
       const id = await db.projects.add(newProject)
@@ -109,9 +126,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       
       setProjects([...projects, newProject])
       setCurrentProject(newProject)
-      setCode(newProject.code || '')
-      setLanguage(newProject.language)
+      setCode(defaultCode)
+      setLanguage(lang)
       setError(null)
+      
+      // Redirect to the new project
+      if (typeof window !== "undefined") {
+        window.location.href = `/project/${id}`;
+      }
     } catch (err) {
       console.error("Failed to create new project:", err)
       setError("Failed to create new project")
@@ -123,10 +145,22 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     if (!currentProject) return
     
     try {
+      const timestamp = new Date().toISOString();
+      
+      // Only create a new version if code has changed
+      let versions = [...(currentProject.versions || [])];
+      if (!versions.length || versions[versions.length - 1].code !== code) {
+        versions.push({
+          code,
+          timestamp
+        });
+      }
+      
       const updatedProject = {
         ...currentProject,
         code,
-        updatedAt: new Date().toISOString()
+        updatedAt: timestamp,
+        versions
       }
       
       await db.projects.update(currentProject.id!, updatedProject)
@@ -158,9 +192,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       const project = await db.projects.get(id)
       if (project) {
         setCurrentProject(project)
+        // Make sure we're using the project's specific code
         setCode(project.code || '')
         setLanguage(project.language)
         setError(null)
+        
+        // Update URL to reflect the current project
+        if (typeof window !== "undefined" && !window.location.pathname.includes(`/project/${id}`)) {
+          window.history.pushState({}, '', `/project/${id}`);
+        }
       }
     } catch (err) {
       console.error("Failed to change project:", err)
@@ -207,9 +247,19 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           setCurrentProject(nextProject)
           setCode(nextProject.code || '')
           setLanguage(nextProject.language)
+          
+          // Redirect to the next project
+          if (typeof window !== "undefined") {
+            window.history.pushState({}, '', `/project/${nextProject.id}`);
+          }
         } else {
           setCurrentProject(null)
           setCode('')
+          
+          // Redirect to home if no projects left
+          if (typeof window !== "undefined") {
+            window.history.pushState({}, '', '/');
+          }
         }
       }
       

@@ -171,7 +171,7 @@ export function EditorContainer() {
         </div>
       )}
 
-      <div className="bg-muted/30 border-b p-2 mx-1 sm:mx-2 rounded-t-md flex flex-wrap items-center gap-2">
+      <div className="bg-muted/30 border-b p-2 mx-1 sm:mx-2 rounded-t-lg border flex flex-wrap items-center gap-2">
         <TooltipProvider>
           <div className="flex items-center gap-2 flex-1">
             <span className="flex items-center justify-center w-6 h-6">
@@ -306,7 +306,7 @@ export function EditorContainer() {
         <CodeEditor code={code} language={language} onChange={handleCodeChange} />
         
         {showPreview && (
-          <div className="h-full">
+          <div className="h-full border-r">
             <div className="bg-muted overflow-hidden h-full">
               {renderPreview()}
             </div>

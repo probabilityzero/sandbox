@@ -41,7 +41,12 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
   }
 ]
 
-export function NewProjectButton({ fullWidth = false }: { fullWidth?: boolean }) {
+interface NewProjectButtonProps {
+  fullWidth?: boolean;
+  className?: string;
+}
+
+export function NewProjectButton({ fullWidth = false, className }: NewProjectButtonProps) {
   const { createNewProject } = useProjects()
   
   const handleCreateProject = (language: LanguageType) => {
@@ -53,14 +58,16 @@ export function NewProjectButton({ fullWidth = false }: { fullWidth?: boolean })
       <DropdownMenuTrigger asChild>
         <Button 
           variant="outline" 
-          size="sm"
-          className={cn(fullWidth && "w-full justify-start")}
+          className={cn(
+            fullWidth && "w-full justify-center",
+            className
+          )}
         >
-          <PlusIcon className="h-4 w-4 mr-1" />
+          {!className?.includes("text-center") && <PlusIcon className="h-4 w-4 mr-1" />}
           New Project
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={fullWidth ? "center" : "start"}>
+      <DropdownMenuContent align={fullWidth ? "center" : "start"} className="w-56">
         {LANGUAGE_OPTIONS.map((option) => {
           const Icon = option.icon
           return (

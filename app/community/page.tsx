@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ChevronDownIcon, SearchIcon } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
+import { ProjectCard, ProjectCardProps } from "@/components/project-card"
 
-// Sample template data
-const templates = [
+// Sample community project data
+const communityProjects: ProjectCardProps[] = [
   {
     id: 1,
     title: "Particle System",
@@ -20,7 +20,11 @@ const templates = [
       name: "Alex Smith",
       avatar: "/avatars/alex.png"
     },
-    forks: "11.4K"
+    stats: {
+      forks: "11.4K",
+      likes: "2.3K"
+    },
+    isCommunity: true
   },
   {
     id: 2,
@@ -32,7 +36,11 @@ const templates = [
       name: "Jane Doe",
       avatar: "/avatars/jane.png"
     },
-    forks: "13.4K"
+    stats: {
+      forks: "13.4K",
+      likes: "8.2K"
+    },
+    isCommunity: true
   },
   {
     id: 3,
@@ -44,7 +52,11 @@ const templates = [
       name: "John Smith",
       avatar: "/avatars/john.png"
     },
-    forks: "6.4K"
+    stats: {
+      forks: "6.4K",
+      likes: "3.1K"
+    },
+    isCommunity: true
   },
   {
     id: 4,
@@ -56,7 +68,11 @@ const templates = [
       name: "Emma Wilson",
       avatar: "/avatars/emma.png"
     },
-    forks: "5.2K"
+    stats: {
+      forks: "5.2K",
+      likes: "4.7K"
+    },
+    isCommunity: true
   },
   {
     id: 5,
@@ -68,7 +84,11 @@ const templates = [
       name: "Michael Brown",
       avatar: "/avatars/michael.png"
     },
-    forks: "9.8K"
+    stats: {
+      forks: "9.8K",
+      likes: "5.6K"
+    },
+    isCommunity: true
   },
   {
     id: 6,
@@ -80,12 +100,71 @@ const templates = [
       name: "Sarah Johnson",
       avatar: "/avatars/sarah.png"
     },
-    forks: "7.6K"
+    stats: {
+      forks: "7.6K",
+      likes: "4.2K"
+    },
+    isCommunity: true
+  },
+  {
+    id: 7,
+    title: "Ray Marching Demo",
+    description: "Real-time ray marching with signed distance functions",
+    image: "/templates/ray-marching.png",
+    language: "glsl",
+    author: {
+      name: "David Lee",
+      avatar: "/avatars/david.png"
+    },
+    stats: {
+      forks: "3.9K",
+      likes: "2.8K"
+    },
+    isCommunity: true
+  },
+  {
+    id: 8,
+    title: "Physics Playground",
+    description: "Interactive physics simulation with custom forces",
+    image: "/templates/physics.png",
+    language: "javascript",
+    author: {
+      name: "Lisa Chen",
+      avatar: "/avatars/lisa.png"
+    },
+    stats: {
+      forks: "8.5K",
+      likes: "6.1K"
+    },
+    isCommunity: true
+  },
+  {
+    id: 9,
+    title: "Data Visualization Toolkit",
+    description: "Modular components for interactive data visualization",
+    image: "/templates/data-viz.png",
+    language: "javascript",
+    author: {
+      name: "Robert Kim",
+      avatar: "/avatars/robert.png"
+    },
+    stats: {
+      forks: "12.2K",
+      likes: "7.8K"
+    },
+    isCommunity: true
   }
 ]
 
 export default function Community() {
-  const [activeTab, setActiveTab] = useState("all")
+  const [searchTerm, setSearchTerm] = useState("")
+  
+  const filteredProjects = searchTerm 
+    ? communityProjects.filter(p => 
+        p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : communityProjects
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -135,7 +214,9 @@ export default function Community() {
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
             placeholder="Search projects..." 
-            className="pl-10 py-6 text-base rounded-md" 
+            className="pl-10 py-6 text-base rounded-md"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         
@@ -160,42 +241,11 @@ export default function Community() {
           
           <TabsContent value="all" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {templates.map((template) => (
-                <div key={template.id} className="group overflow-hidden rounded-lg border bg-background transition-colors hover:bg-accent/50">
-                  <Link href={`/community/project/${template.id}`} className="block">
-                    <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-black/10" />
-                      {/* Using a div as placeholder for now since we don't have the actual images */}
-                      <div 
-                        className="h-full w-full bg-gradient-to-br from-gray-900 to-gray-700"
-                        style={{ backgroundImage: `url(${template.image})`, backgroundSize: 'cover' }}
-                      />
-                      
-                      {/* Language badge */}
-                      <div className="absolute top-2 right-2 px-2 py-1 rounded text-xs font-medium bg-black/60 text-white">
-                        {template.language === "javascript" && "JavaScript"}
-                        {template.language === "python" && "Python"}
-                        {template.language === "glsl" && "GLSL"}
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-medium mb-1">{template.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{template.description}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-full bg-gray-300 overflow-hidden">
-                            {/* Avatar placeholder */}
-                            <div className="h-full w-full bg-gradient-to-br from-pink-500 to-blue-500" />
-                          </div>
-                          <span className="text-xs text-muted-foreground">{template.author.name}</span>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {template.forks} Forks
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
+              {filteredProjects.map((project) => (
+                <ProjectCard 
+                  key={project.id} 
+                  {...project}
+                />
               ))}
             </div>
           </TabsContent>
@@ -204,48 +254,19 @@ export default function Community() {
           {["javascript", "python", "glsl", "generative", "interactive", "data"].map(tab => (
             <TabsContent key={tab} value={tab}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {templates
-                  .filter(t => {
+                {filteredProjects
+                  .filter(p => {
                     if (tab === "javascript" || tab === "python" || tab === "glsl") {
-                      return t.language === tab;
+                      return p.language === tab;
                     }
-                    // For other categories, we would filter by category if we had that data
+                    // For other categories, we would filter by category
                     return true;
                   })
-                  .map((template) => (
-                    <div key={template.id} className="group overflow-hidden rounded-lg border bg-background transition-colors hover:bg-accent/50">
-                      <Link href={`/community/project/${template.id}`} className="block">
-                        <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                          <div className="absolute inset-0 bg-gradient-to-t from-transparent to-black/10" />
-                          <div 
-                            className="h-full w-full bg-gradient-to-br from-gray-900 to-gray-700"
-                            style={{ backgroundImage: `url(${template.image})`, backgroundSize: 'cover' }}
-                          />
-                          
-                          {/* Language badge */}
-                          <div className="absolute top-2 right-2 px-2 py-1 rounded text-xs font-medium bg-black/60 text-white">
-                            {template.language === "javascript" && "JavaScript"}
-                            {template.language === "python" && "Python"}
-                            {template.language === "glsl" && "GLSL"}
-                          </div>
-                        </div>
-                        <div className="p-4">
-                          <h3 className="font-medium mb-1">{template.title}</h3>
-                          <p className="text-sm text-muted-foreground mb-3">{template.description}</p>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <div className="h-7 w-7 rounded-full bg-gray-300 overflow-hidden">
-                                <div className="h-full w-full bg-gradient-to-br from-pink-500 to-blue-500" />
-                              </div>
-                              <span className="text-xs text-muted-foreground">{template.author.name}</span>
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {template.forks} Forks
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
+                  .map((project) => (
+                    <ProjectCard 
+                      key={project.id} 
+                      {...project}
+                    />
                   ))}
               </div>
             </TabsContent>

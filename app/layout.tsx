@@ -10,13 +10,14 @@ import { SidebarProvider } from "@/hooks/use-sidebar"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Creative Coding Editor",
-  description: "A creative development environment",
-  keywords: ["creative coding", "editor", "p5.js", "javascript", "sandbox"],
+  title: "Grid Sandbox - Creative Coding Platform",
+  description: "A browser-based creative coding platform for experimenting with JavaScript, Python, and shader programming",
+  keywords: ["creative coding", "editor", "p5.js", "javascript", "python", "glsl", "sandbox"],
   authors: [{ name: "Grid Sandbox Team" }],
   viewport: "width=device-width, initial-scale=1",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/cube-logo.svg",
+    apple: "/cube-logo.svg",
   },
 }
 
@@ -27,8 +28,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/cube-logo.svg" />
+      </head>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <ProjectProvider>
             <SidebarProvider>
               <div className="flex min-h-screen relative">

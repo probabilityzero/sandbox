@@ -15,17 +15,17 @@ import {
   BookOpenIcon,
   ChevronRightIcon,
   ChevronDownIcon,
-  CodeIcon,
   BrushIcon
 } from "lucide-react"
 import Link from "next/link"
 import { useSidebar } from "@/hooks/use-sidebar"
 import { useProjects } from "@/hooks/use-projects"
 import type { Project } from "@/types/project"
+import Image from "next/image"
 
 export function Sidebar() {
   const { isOpen, isMobile, toggle, close } = useSidebar()
-  const { projects } = useProjects()
+  const { projects, createNewProject } = useProjects()
   const [recentProjects, setRecentProjects] = useState<Project[]>([])
   const [expandedSections, setExpandedSections] = useState({
     recent: true,
@@ -98,34 +98,31 @@ export function Sidebar() {
           "transition-all duration-300"
         )}
       >
-        <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
-              <CodeIcon className="h-4 w-4 text-primary-foreground" />
+            <div className="h-7 w-7 flex items-center justify-center">
+              <Image 
+                src="/cube-logo.svg" 
+                width={24} 
+                height={24} 
+                alt="Grid Sandbox Logo" 
+              />
             </div>
             <span className="font-medium text-foreground">Grid Sandbox</span>
           </div>
-          {isMobile && (
-            <Button variant="ghost" size="icon" onClick={close}>
-              <XIcon className="h-4 w-4" />
-            </Button>
-          )}
         </div>
         
-        <div className="px-3 py-4">
-          <Button 
-            variant="outline" 
-            className="w-full bg-secondary/50 hover:bg-secondary border-accent text-center h-9 font-medium"
-            onClick={() => window.location.href = '/new'}
-          >
-            New Project
-          </Button>
+        <div className="px-3 py-2">
+          <NewProjectButton 
+            fullWidth 
+            className="bg-secondary/50 hover:bg-secondary border-accent text-center h-9 font-medium"
+          />
         </div>
         
         <div className="flex flex-col space-y-1 px-3 py-2">
           <Link 
             href="/dashboard" 
-            className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-accent text-foreground"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
           >
             <FolderIcon className="h-4 w-4" />
             <span className="text-sm">My Projects</span>
@@ -133,16 +130,16 @@ export function Sidebar() {
           
           <Link 
             href="/community" 
-            className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-accent text-foreground"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
           >
             <UsersIcon className="h-4 w-4" />
             <span className="text-sm">Community</span>
           </Link>
         </div>
 
-        <div className="flex flex-col space-y-1 px-3 mt-2">
+        <div className="flex flex-col space-y-1 px-3">
           <button 
-            className="flex items-center justify-between px-2 py-1.5 rounded hover:bg-accent text-foreground"
+            className="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
             onClick={() => toggleSection('examples')}
           >
             <div className="flex items-center gap-2">
@@ -150,13 +147,13 @@ export function Sidebar() {
               <span className="text-sm">Examples</span>
             </div>
             {expandedSections.examples ? 
-              <ChevronDownIcon className="h-4 w-4" /> : 
-              <ChevronRightIcon className="h-4 w-4" />
+              <ChevronDownIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : 
+              <ChevronRightIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
             }
           </button>
           
           <button 
-            className="flex items-center justify-between px-2 py-1.5 rounded hover:bg-accent text-foreground"
+            className="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
             onClick={() => toggleSection('tutorials')}
           >
             <div className="flex items-center gap-2">
@@ -164,21 +161,21 @@ export function Sidebar() {
               <span className="text-sm">Tutorials</span>
             </div>
             {expandedSections.tutorials ? 
-              <ChevronDownIcon className="h-4 w-4" /> : 
-              <ChevronRightIcon className="h-4 w-4" />
+              <ChevronDownIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : 
+              <ChevronRightIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
             }
           </button>
         </div>
         
         <div className="flex-1 overflow-auto mt-2">
           <button 
-            className="flex items-center justify-between px-5 py-1.5 w-full text-left hover:bg-accent"
+            className="flex items-center justify-between pl-5 pr-6 py-1.5 w-full text-left text-muted-foreground hover:text-foreground"
             onClick={() => toggleSection('recent')}
           >
-            <span className="text-xs uppercase text-muted-foreground font-medium">Recent Projects</span>
+            <span className="text-xs">Recent</span>
             {expandedSections.recent ? 
-              <ChevronDownIcon className="h-4 w-4" /> : 
-              <ChevronRightIcon className="h-4 w-4" />
+              <ChevronDownIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : 
+              <ChevronRightIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
             }
           </button>
           
@@ -206,7 +203,7 @@ export function Sidebar() {
           )}
         </div>
         
-        <div className="p-4 border-t border-border">
+        <div className="p-3">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Theme</span>
             <ThemeToggle />
@@ -219,13 +216,13 @@ export function Sidebar() {
           variant="ghost"
           size="icon"
           className={cn(
-            "fixed z-50 m-3 bg-background shadow-sm transition-all duration-300",
+            "fixed z-50 m-2 bg-background transition-all duration-300",
             isOpen ? "left-60" : "left-0"
           )}
           onClick={toggle}
           title={isOpen ? "Collapse sidebar" : "Expand sidebar"}
         >
-          {isOpen ? <PanelLeftCloseIcon className="h-4 w-4" /> : <PanelLeftIcon className="h-4 w-4" />}
+          {isOpen ? <PanelLeftCloseIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : <PanelLeftIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />}
         </Button>
       )}
       
@@ -233,13 +230,13 @@ export function Sidebar() {
         <Button
           variant="ghost"
           size="icon"
-          className="fixed top-3 left-3 z-50"
+          className="fixed top-2 left-2 z-50"
           onClick={(e) => {
             e.stopPropagation()
             toggle()
           }}
         >
-          <MenuIcon className="h-4 w-4" />
+          <MenuIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
         </Button>
       )}
     </>
