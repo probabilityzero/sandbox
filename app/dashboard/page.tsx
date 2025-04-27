@@ -24,27 +24,10 @@ export default function Dashboard() {
     }
   }, [searchTerm, projects])
 
-  const headerActions = (
-    <>
-      <div className="relative flex-1 md:flex-none">
-        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input 
-          placeholder="Search projects" 
-          className="pl-10 w-full"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      <NewProjectButton />
-    </>
-  )
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header 
-        title="My Projects"
-        actions={headerActions}
-      />
+      <Header title="My Projects"/>
 
       <div className="container py-8">
         {filteredProjects.length > 0 ? (

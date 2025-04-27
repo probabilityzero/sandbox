@@ -22,24 +22,18 @@ export function Header({ title, actions }: HeaderProps) {
   
   return (
     <header className={cn(
-      "sticky top-0 z-10 bg-background w-full py-4",
+      "sticky top-0 z-10 bg-background w-full py-3",
       "transition-all duration-200",
-      hasScrolled ? "border-b shadow-sm" : ""
+      hasScrolled ? "shadow-md" : "bg-background/50 backdrop-blur-md",
     )}>
       <div className="container flex flex-col md:flex-row md:items-center gap-4">
         <div className="flex-1">
           {typeof title === 'string' ? (
-            <h1 className="text-xl md:text-2xl font-semibold">{title}</h1>
+            <h1 className="text-lg md:text-2xl font-semibold ml-4">{title}</h1>
           ) : (
             title
           )}
         </div>
-        
-        {actions && (
-          <div className="flex items-center gap-2 w-full md:w-auto">
-            {actions}
-          </div>
-        )}
       </div>
     </header>
   )

@@ -75,8 +75,7 @@ export function ProjectCard({
   
   const cardContent = (
     <>
-      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-        <div className="absolute inset-0 bg-gradient-to-t from-transparent to-black/10" />
+      <div className="relative aspect-[16/10] overflow-hidden bg-muted rounded-lg">
         {image ? (
           <div 
             className="h-full w-full bg-cover bg-center"
@@ -152,7 +151,7 @@ export function ProjectCard({
     : `/project/${id}`
   
   return (
-    <div className="group overflow-hidden rounded-lg border bg-background transition-colors hover:bg-accent/50">
+    <div className="group overflow-hidden transition-colors">
       {onClick ? (
         <button 
           onClick={onClick} 

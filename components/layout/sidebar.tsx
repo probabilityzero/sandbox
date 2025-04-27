@@ -94,7 +94,7 @@ export function Sidebar() {
   return (
     <>
       {isOpen && isMobile && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30" />
+        <div className="fixed inset-0 bg-background/80 transition-all duration-400 z-30" />
       )}
       
       {!isMobile && (
@@ -110,10 +110,10 @@ export function Sidebar() {
         id="sidebar-container"
         className={cn(
           "top-0 bottom-0 bg-background border-r border-border z-40 flex flex-col h-screen",
-          isMobile ? "fixed" : "fixed", // Changed from "absolute" to "fixed" for desktop
+          isMobile ? "fixed" : "fixed", 
           isOpen ? (isMobile ? "w-[280px]" : "w-60") : "w-0",
           isOpen ? "left-0" : "-left-80", 
-          "transition-all duration-300"
+          "transition-all duration-200"
         )}
       >
         <div className="flex items-center justify-between p-3">
@@ -137,7 +137,7 @@ export function Sidebar() {
           />
         </div>
         
-        <div className="flex flex-col space-y-1 px-3 py-2">
+        <div className="flex flex-col px-3 pt-1">
           <a 
             href="/dashboard" 
             onClick={(e) => handleNavClick(e, "/dashboard")}
@@ -157,7 +157,7 @@ export function Sidebar() {
           </a>
         </div>
 
-        <div className="flex flex-col space-y-1 px-3">
+        <div className="flex flex-col px-3 py-2">
           <button 
             className="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
             onClick={() => toggleSection('examples')}
@@ -167,13 +167,13 @@ export function Sidebar() {
               <span className="text-sm">Examples</span>
             </div>
             {expandedSections.examples ? 
-              <ChevronDownIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : 
-              <ChevronRightIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+              <ChevronDownIcon className="h-4 w-4" /> : 
+              <ChevronRightIcon className="h-4 w-4" />
             }
           </button>
           
           <button 
-            className="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
+            className="flex items-center justify-between px-3 py-1.5 group-hover:text-foreground rounded-md hover:bg-accent text-foreground"
             onClick={() => toggleSection('tutorials')}
           >
             <div className="flex items-center gap-2">
@@ -181,8 +181,8 @@ export function Sidebar() {
               <span className="text-sm">Tutorials</span>
             </div>
             {expandedSections.tutorials ? 
-              <ChevronDownIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : 
-              <ChevronRightIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+              <ChevronDownIcon className="h-4 w-4" /> : 
+              <ChevronRightIcon className="h-4 w-4" />
             }
           </button>
         </div>
@@ -242,7 +242,7 @@ export function Sidebar() {
           onClick={toggle}
           title={isOpen ? "Collapse sidebar" : "Expand sidebar"}
         >
-          {isOpen ? <PanelLeftCloseIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : <PanelLeftIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />}
+          {isOpen ? <PanelLeftCloseIcon className="h-4 w-4" /> : <PanelLeftIcon className="h-4 w-4" />}
         </Button>
       )}
       
@@ -256,7 +256,7 @@ export function Sidebar() {
             toggle()
           }}
         >
-          <MenuIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+          <MenuIcon className="h-5 w-5" />
         </Button>
       )}
     </>
