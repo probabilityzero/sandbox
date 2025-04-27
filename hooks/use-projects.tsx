@@ -1,44 +1,86 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
-import { db } from "@/lib/db"
 import type { Project, LanguageType } from "@/types/project"
-import { getDefaultSketch } from "@/lib/default-sketch"
+import { db } from "@/lib/db"
 
-interface ProjectContextType {
+// Default code templates for different languages
+const DEFAULT_TEMPLATES: Record<LanguageType, string> = {
+  javascript: `function setup() {
+  createCanvas(400, 400);
+}
+
+function draw() {
+  background(220);
+  ellipse(mouseX, mouseY, 80, 80);
+}`,
+  python: `import js
+from pyodide.ffi import create_proxy
+
+def setup():
+    p5 = js.window.p5
+    p5.createCanvas(400, 400)
+
+def draw():
+    p5 = js.window.p5
+    p5.background(220)
+    p5.ellipse(p5.mouseX, p5.mouseY, 80, 80)
+
+# Setup p5js event listeners
+js.window.setup = create_proxy(setup)
+js.window.draw = create_proxy(draw)`,
+  glsl: `precision mediump float;
+
+uniform vec2 u_resolution;
+uniform float u_time;
+
+void main() {
+    vec2 st = gl_FragCoord.xy / u_resolution.xy;
+    gl_FragColor = vec4(st.x, st.y, abs(sin(u_time * 0.5)), 1.0);
+}`
+}
+
+interface ProjectsContextType {
   projects: Project[]
   currentProject: Project | null
   code: string
   language: LanguageType
   error: string | null
   setCode: (code: string) => void
-  createNewProject: (language: LanguageType) => Promise<void>
-  saveProject: () => Promise<Project | undefined>
-  changeProject: (projectId: number) => Promise<void>
-  changeLanguage: (language: LanguageType) => Promise<void>
+  createNewProject: (language: LanguageType) => void
+  saveProject: () => void
+  changeProject: (id: number) => void
+  updateProjectName: (id: number, name: string) => void
+  deleteProject: (id: number) => void
 }
 
-const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
+const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined)
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([])
   const [currentProject, setCurrentProject] = useState<Project | null>(null)
-  const [code, setCode] = useState<string>("")
+  const [code, setCode] = useState("")
   const [language, setLanguage] = useState<LanguageType>("javascript")
   const [error, setError] = useState<string | null>(null)
 
+  // Load projects from database
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        const allProjects = await db.projects.toArray()
-        setProjects(allProjects)
-
-        if (allProjects.length > 0) {
-          const lastProject = allProjects[allProjects.length - 1]
-          setCurrentProject(lastProject)
-          setCode(lastProject.code)
-          setLanguage(lastProject.language || "javascript")
+        const dbProjects = await db.projects.toArray()
+        setProjects(dbProjects)
+        
+        // If there are projects, select the most recently updated one
+        if (dbProjects.length > 0) {
+          const sortedProjects = [...dbProjects].sort((a, b) => {
+            return new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime()
+          })
+          const latestProject = sortedProjects[0]
+          setCurrentProject(latestProject)
+          setCode(latestProject.code || '')
+          setLanguage(latestProject.language)
         } else {
+          // Create a default project if none exists
           createNewProject("javascript")
         }
       } catch (err) {
@@ -46,130 +88,162 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         setError("Failed to load projects from database")
       }
     }
-
+    
     loadProjects()
   }, [])
 
-  useEffect(() => {
-    if (!currentProject) return
-
-    const saveTimer = setTimeout(async () => {
-      try {
-        await saveProject()
-      } catch (err) {
-        console.error("Auto-save failed:", err)
-      }
-    }, 5000)
-
-    return () => clearTimeout(saveTimer)
-  }, [code, currentProject])
-
-  const createNewProject = async (selectedLanguage: LanguageType = language) => {
+  // Create a new project
+  const createNewProject = async (lang: LanguageType) => {
     try {
-      const defaultCode = getDefaultSketch(selectedLanguage)
-
       const newProject: Project = {
-        id: Date.now(),
-        name: `${selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} Sketch ${projects.length + 1}`,
-        code: defaultCode,
-        language: selectedLanguage,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        versions: [],
+        name: `New ${lang.charAt(0).toUpperCase() + lang.slice(1)} Project`,
+        language: lang,
+        code: DEFAULT_TEMPLATES[lang],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        versions: [] // Add the missing versions property as an empty array
       }
-
-      await db.projects.add(newProject)
+      
+      const id = await db.projects.add(newProject)
+      newProject.id = id
+      
       setProjects([...projects, newProject])
       setCurrentProject(newProject)
-      setCode(newProject.code)
-      setLanguage(selectedLanguage)
+      setCode(newProject.code || '')
+      setLanguage(newProject.language)
+      setError(null)
     } catch (err) {
       console.error("Failed to create new project:", err)
       setError("Failed to create new project")
     }
   }
 
+  // Save current project
   const saveProject = async () => {
     if (!currentProject) return
-
+    
     try {
-      const newVersion = {
-        code: currentProject.code,
-        timestamp: new Date(),
-      }
-
       const updatedProject = {
         ...currentProject,
         code,
-        language,
-        updatedAt: new Date(),
-        versions: [...(currentProject.versions || []), newVersion],
+        updatedAt: new Date().toISOString()
       }
-
-      await db.projects.update(currentProject.id, updatedProject)
+      
+      await db.projects.update(currentProject.id!, updatedProject)
+      
+      const updatedProjects = projects.map(p => {
+        if (p.id === currentProject.id) {
+          return updatedProject
+        }
+        return p
+      })
+      
+      setProjects(updatedProjects)
       setCurrentProject(updatedProject)
-      setProjects(projects.map((p) => (p.id === updatedProject.id ? updatedProject : p)))
-
-      return updatedProject
+      setError(null)
     } catch (err) {
       console.error("Failed to save project:", err)
       setError("Failed to save project")
-      throw err
     }
   }
 
-  const changeProject = async (projectId: number) => {
+  // Change to a different project
+  const changeProject = async (id: number) => {
     try {
+      // Save current project first
       if (currentProject) {
         await saveProject()
       }
-
-      const selectedProject = await db.projects.get(projectId)
-      if (selectedProject) {
-        setCurrentProject(selectedProject)
-        setCode(selectedProject.code)
-        setLanguage(selectedProject.language || "javascript")
+      
+      const project = await db.projects.get(id)
+      if (project) {
+        setCurrentProject(project)
+        setCode(project.code || '')
+        setLanguage(project.language)
+        setError(null)
       }
     } catch (err) {
       console.error("Failed to change project:", err)
-      setError("Failed to change project")
+      setError("Failed to load selected project")
     }
   }
-
-  const changeLanguage = async (newLanguage: LanguageType) => {
-    if (language === newLanguage) return
-
+  
+  // Update project name
+  const updateProjectName = async (id: number, name: string) => {
     try {
-      if (currentProject) {
-        await saveProject()
+      await db.projects.update(id, { name })
+      
+      const updatedProjects = projects.map(p => {
+        if (p.id === id) {
+          return { ...p, name }
+        }
+        return p
+      })
+      
+      setProjects(updatedProjects)
+      
+      if (currentProject && currentProject.id === id) {
+        setCurrentProject({ ...currentProject, name })
       }
-
-      await createNewProject(newLanguage)
+      
+      setError(null)
     } catch (err) {
-      console.error("Failed to change language:", err)
-      setError("Failed to change language")
+      console.error("Failed to update project name:", err)
+      setError("Failed to update project name")
+    }
+  }
+  
+  // Delete project
+  const deleteProject = async (id: number) => {
+    try {
+      await db.projects.delete(id)
+      
+      const updatedProjects = projects.filter(p => p.id !== id)
+      setProjects(updatedProjects)
+      
+      if (currentProject && currentProject.id === id) {
+        if (updatedProjects.length > 0) {
+          const nextProject = updatedProjects[0]
+          setCurrentProject(nextProject)
+          setCode(nextProject.code || '')
+          setLanguage(nextProject.language)
+        } else {
+          setCurrentProject(null)
+          setCode('')
+        }
+      }
+      
+      setError(null)
+    } catch (err) {
+      console.error("Failed to delete project:", err)
+      setError("Failed to delete project")
     }
   }
 
-  const value = {
-    projects,
-    currentProject,
-    code,
-    language, 
-    error,
-    setCode,
-    createNewProject,
-    saveProject,
-    changeProject,
-    changeLanguage,
-  }
-
-  return <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
+  return (
+    <ProjectsContext.Provider
+      value={{
+        projects,
+        currentProject,
+        code,
+        language,
+        error,
+        setCode,
+        createNewProject,
+        saveProject,
+        changeProject,
+        updateProjectName,
+        deleteProject
+      }}
+    >
+      {children}
+    </ProjectsContext.Provider>
+  )
 }
 
 export function useProjects() {
-  const context = useContext(ProjectContext)
-  if (context === undefined) {
+  const context = useContext(ProjectsContext)
+  if (!context) {
     throw new Error("useProjects must be used within a ProjectProvider")
   }
   return context

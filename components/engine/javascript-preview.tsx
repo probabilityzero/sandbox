@@ -40,6 +40,7 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
               margin: 0;
               padding: 0;
               overflow: hidden;
+              background-color: rgb(20, 20, 20);
             }
             canvas {
               display: block;

@@ -2,15 +2,15 @@ export type LanguageType = "javascript" | "python" | "glsl"
 
 export interface Version {
   code: string
-  timestamp: Date
+  timestamp: string
 }
 
 export interface Project {
-  id: number
+  id?: number
   name: string
-  code: string
+  code?: string
   language: LanguageType
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
   versions: Version[]
 }

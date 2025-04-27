@@ -35,35 +35,35 @@
     --radius: 0.5rem;
   }
   
-
   .dark {
-    /* Dark mode adjustments */
-    --background: 210 15% 8%; /* Darker deep blue for dark mode */
-    --foreground: 210 80% 90%; /* Lighter foreground for readability in dark mode */
+    /* Updated dark mode to match the screenshot */
+    --background: 0 0% 7%; /* Near-black background */
+    --foreground: 0 0% 98%; /* Very light text for contrast */
 
-    --card: 210 10% 20%; /* Very dark card background for contrast */
-    --card-foreground: 220 90% 85%; /* Light text on dark card elements */
+    --card: 0 0% 10%; /* Slightly lighter than background for cards */
+    --card-foreground: 0 0% 98%; /* Light text on cards */
 
-    --popover: 210 10% 15%; /* Darker popover for dark mode */
-    --popover-foreground: 220 90% 85%; /* Lighter popover text */
+    --popover: 0 0% 12%; /* Dark popover backgrounds */
+    --popover-foreground: 0 0% 98%; /* Light popover text */
 
-    --primary: 220 70% 35%; /* Darker, more subdued primary color */
-    --primary-foreground: 220 90% 95%; /* Brighter text for primary buttons */
-    --secondary: 180 50% 40%; /* Secondary colors in dark mode */
-    --secondary-foreground: 220 90% 85%; /* Secondary foreground text */
+    --primary: 0 0% 98%; /* White as primary color for maximum contrast */
+    --primary-foreground: 0 0% 7%; /* Dark text on primary buttons */
+
+    --secondary: 240 4% 16%; /* Dark gray for secondary elements */
+    --secondary-foreground: 0 0% 98%; /* Light text on secondary elements */
     
-    --muted: 210 20% 15%; /* Very dark background for muted elements */
-    --muted-foreground: 210 40% 60%; /* Muted foreground text */
+    --muted: 0 0% 15%; /* Slightly lighter than background for muted elements */
+    --muted-foreground: 0 0% 63%; /* Gray text for muted areas */
     
-    --accent: 150 70% 50%; /* Bright neon accent for highlights in dark mode */
-    --accent-foreground: 220 100% 100%; /* Neon text on accent background */
+    --accent: 240 4% 16%; /* Similar to secondary for accent areas */
+    --accent-foreground: 0 0% 98%; /* Light text on accent areas */
 
-    --destructive: 0 100% 50%; /* Red for destructive actions */
-    --destructive-foreground: 210 80% 95%; /* White text for destructive in dark mode */
+    --destructive: 0 84% 60%; /* Red for destructive actions */
+    --destructive-foreground: 0 0% 98%; /* Light text on destructive elements */
 
-    --border: 220 10% 20%; /* Dark borders in dark mode */
-    --input: 220 10% 15%; /* Dark input fields */
-    --ring: 210 80% 70%; /* Luminous rings on hover or focus */
+    --border: 240 4% 16%; /* Dark borders to match the UI */
+    --input: 240 4% 16%; /* Dark input fields */
+    --ring: 240 5% 26%; /* Slightly lighter ring for focus states */
   }
 }
 
@@ -75,7 +75,6 @@
     @apply bg-background text-foreground;
   }
 }
-
 
 @layer base {
   * {
