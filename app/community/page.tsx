@@ -168,7 +168,7 @@ export default function Community() {
 
   const headerTitle = (
     <div className="flex justify-between items-center">
-      <h1 className="text-xl md:text-2xl font-semibold ml-4">Community</h1>
+      <h1 className="text-lg md:text-xl font-semibold ml-4">Community</h1>
       <div className="flex space-x-4 text-sm font-medium text-muted-foreground">
         <Link href="/community/submissions">My Submissions</Link>
       </div>

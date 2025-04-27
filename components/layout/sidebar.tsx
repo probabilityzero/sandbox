@@ -19,7 +19,10 @@ import {
   SettingsIcon,
   UserIcon,
   LifeBuoyIcon,
-  LogOutIcon
+  LogOutIcon,
+  MenuSquareIcon,
+  LucideFolderCode,
+  Shapes
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -143,7 +146,7 @@ export function Sidebar() {
             onClick={(e) => handleNavClick(e, "/dashboard")}
             className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
           >
-            <FolderIcon className="h-4 w-4" />
+            <LucideFolderCode className="h-4 w-4" />
             <span className="text-sm">My Projects</span>
           </a>
           
@@ -152,7 +155,7 @@ export function Sidebar() {
             onClick={(e) => handleNavClick(e, "/community")}
             className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
           >
-            <UsersIcon className="h-4 w-4" />
+            <Shapes className="h-4 w-4" />
             <span className="text-sm">Community</span>
           </a>
         </div>
@@ -250,13 +253,13 @@ export function Sidebar() {
         <Button
           variant="ghost"
           size="icon"
-          className="fixed top-2 left-2 z-50"
+          className="fixed top-1 left-1 z-50"
           onClick={(e) => {
             e.stopPropagation()
             toggle()
           }}
         >
-          <MenuIcon className="h-5 w-5" />
+          <MenuSquareIcon className="h-6 w-6" />
         </Button>
       )}
     </>

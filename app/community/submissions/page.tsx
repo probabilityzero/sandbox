@@ -76,14 +76,7 @@ export default function Submissions() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header 
-        title={
-          <div className="flex items-center gap-2">
-            <Link href="/community" className="hover:text-muted-foreground">
-              <ArrowLeftIcon className="h-4 w-4" />
-            </Link>
-            <h1 className="text-xl md:text-2xl font-semibold">My Submissions</h1>
-          </div>
-        } 
+        title="My Submissions" 
         actions={headerActions}
       />
       
