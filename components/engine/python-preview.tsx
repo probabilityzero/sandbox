@@ -1,20 +1,23 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Button } from "./ui/button"
-import { PlayIcon, PauseIcon, RefreshCwIcon as RefreshIcon, TerminalIcon } from "lucide-react"
-import { Card } from "./ui/card"
+import { Button } from "../ui/button"
+import { PlayIcon, PauseIcon, RefreshCwIcon as RefreshIcon, TerminalIcon, LoaderIcon } from "lucide-react"
+import { Card } from "../ui/card"
+import { Progress } from "../ui/progress"
 
-interface JavaScriptPreviewProps {
+interface PythonPreviewProps {
   code: string
 }
 
-export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
+export function PythonPreview({ code }: PythonPreviewProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [isRunning, setIsRunning] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [consoleOutput, setConsoleOutput] = useState<Array<{ type: string; message: string }>>([])
   const [showConsole, setShowConsole] = useState(false)
+  const [pyodideLoading, setPyodideLoading] = useState(false)
+  const [loadingProgress, setLoadingProgress] = useState(0)
 
   useEffect(() => {
     if (isRunning) {
@@ -26,22 +29,23 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
     if (!iframeRef.current) return
 
     try {
-      // Reset console output
       setConsoleOutput([])
+      setPyodideLoading(true)
+      setLoadingProgress(0)
 
-      // Create a blob URL for the HTML content
       const htmlContent = `
       <!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+          <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
           <style>
             body {
               margin: 0;
               padding: 0;
               overflow: hidden;
+              background-color: rgb(20, 20, 20);
             }
             canvas {
               display: block;
@@ -52,11 +56,17 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
               padding: 10px;
               white-space: pre-wrap;
             }
+            .loading {
+              color: white;
+              font-family: sans-serif;
+              padding: 20px;
+              text-align: center;
+            }
           </style>
         </head>
         <body>
+          <div id="loading" class="loading">Loading Python environment...</div>
           <script>
-            // Override console methods to capture output
             (function() {
               const originalConsole = {
                 log: console.log,
@@ -88,25 +98,57 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
               console.info = captureConsole('info');
             })();
             
-            try {
-              ${code}
-            } catch (error) {
-              document.body.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
-              window.parent.postMessage({ type: 'error', message: error.message }, '*');
+            window.mouseX = 0;
+            window.mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+              window.mouseX = e.clientX;
+              window.mouseY = e.clientY;
+            });
+
+            async function main() {
+              try {
+                window.parent.postMessage({ type: 'pyodide-loading', progress: 10 }, '*');
+                const pyodide = await loadPyodide();
+                window.parent.postMessage({ type: 'pyodide-loading', progress: 50 }, '*');
+                
+                pyodide.setStdout({
+                  write: (text) => {
+                    console.log(text);
+                  }
+                });
+                
+                pyodide.setStderr({
+                  write: (text) => {
+                    console.error(text);
+                  }
+                });
+                
+                window.parent.postMessage({ type: 'pyodide-loading', progress: 70 }, '*');
+                
+                await pyodide.loadPackage("numpy");
+                window.parent.postMessage({ type: 'pyodide-loading', progress: 90 }, '*');
+                
+                document.getElementById('loading').style.display = 'none';
+                window.parent.postMessage({ type: 'pyodide-loading', progress: 100 }, '*');
+                
+                await pyodide.runPythonAsync(\`${code}\`);
+              } catch (error) {
+                document.body.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+                window.parent.postMessage({ type: 'error', message: error.message }, '*');
+              }
             }
+            
+            main();
           </script>
         </body>
       </html>
     `
 
-      // Create a blob URL
       const blob = new Blob([htmlContent], { type: "text/html" })
       const blobURL = URL.createObjectURL(blob)
 
-      // Set the iframe src to the blob URL
       iframeRef.current.src = blobURL
 
-      // Clean up the blob URL when the iframe loads
       iframeRef.current.onload = () => {
         URL.revokeObjectURL(blobURL)
       }
@@ -115,6 +157,7 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
     } catch (err) {
       console.error("Failed to update preview:", err)
       setError(err instanceof Error ? err.message : "Unknown error")
+      setPyodideLoading(false)
     }
   }
 
@@ -122,8 +165,14 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
     const handleMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === "error") {
         setError(event.data.message)
+        setPyodideLoading(false)
       } else if (event.data && event.data.type === "console") {
         setConsoleOutput((prev) => [...prev, { type: event.data.consoleType, message: event.data.message }])
+      } else if (event.data && event.data.type === "pyodide-loading") {
+        setLoadingProgress(event.data.progress)
+        if (event.data.progress === 100) {
+          setPyodideLoading(false)
+        }
       }
     }
 
@@ -148,28 +197,17 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b p-2 flex items-center">
-        <Button size="sm" variant="outline" onClick={toggleRunning} className="mr-2">
-          {isRunning ? <PauseIcon className="h-4 w-4" /> : <PlayIcon className="h-4 w-4" />}
-          {isRunning ? "Pause" : "Run"}
-        </Button>
-        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2">
-          <RefreshIcon className="h-4 w-4 mr-1" />
-          Refresh
-        </Button>
-        <Button size="sm" variant={showConsole ? "default" : "outline"} onClick={toggleConsole} className="ml-auto">
-          <TerminalIcon className="h-4 w-4 mr-1" />
-          Console {consoleOutput.length > 0 && `(${consoleOutput.length})`}
-        </Button>
-      </div>
-
-      {error && (
-        <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2 font-mono text-sm whitespace-pre-wrap">
-          {error}
+      {pyodideLoading && (
+        <div className="bg-background p-4 flex flex-col items-center justify-center absolute inset-0 z-10">
+          <div className="flex items-center mb-2">
+            <LoaderIcon className="animate-spin h-5 w-5 mr-2" />
+            <span>Loading Python Environment...</span>
+          </div>
+          <Progress value={loadingProgress} className="w-full max-w-md" />
         </div>
       )}
 
-      <div className={`flex-1 bg-muted ${showConsole ? "h-1/2" : "h-full"}`}>
+      <div className={`flex-1 bg-muted ${showConsole ? "h-2/3" : "h-full"}`}>
         <iframe
           ref={iframeRef}
           title="Preview"
@@ -178,8 +216,14 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
         />
       </div>
 
+      {error && (
+        <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2 font-mono text-sm whitespace-pre-wrap">
+          {error}
+        </div>
+      )}
+
       {showConsole && (
-        <Card className="h-1/2 overflow-auto p-2 m-2 font-mono text-sm">
+        <Card className="h-1/3 overflow-auto p-2 m-2 font-mono text-sm">
           <div className="p-2">
             {consoleOutput.length === 0 ? (
               <div className="text-muted-foreground">No console output</div>
@@ -205,6 +249,28 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
           </div>
         </Card>
       )}
+
+      <div className="border-t p-1.5 flex items-center gap-1 bg-muted/50">
+        <Button size="icon" variant="ghost" onClick={toggleRunning} className="h-7 w-7" disabled={pyodideLoading}>
+          {isRunning ? <PauseIcon className="h-3.5 w-3.5" /> : <PlayIcon className="h-3.5 w-3.5" />}
+        </Button>
+        <Button size="icon" variant="ghost" onClick={handleRefresh} className="h-7 w-7" disabled={pyodideLoading}>
+          <RefreshIcon className="h-3.5 w-3.5" />
+        </Button>
+        <Button 
+          size="icon" 
+          variant={showConsole ? "secondary" : "ghost"} 
+          onClick={toggleConsole} 
+          className="h-7 w-7 ml-auto"
+        >
+          <TerminalIcon className="h-3.5 w-3.5" />
+        </Button>
+        {consoleOutput.length > 0 && (
+          <span className="text-xs bg-primary text-primary-foreground rounded-full px-1.5 h-4 flex items-center justify-center">
+            {consoleOutput.length}
+          </span>
+        )}
+      </div>
     </div>
   )
 }

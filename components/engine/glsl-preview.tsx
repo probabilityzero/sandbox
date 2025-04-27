@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Button } from "./ui/button"
+import { Button } from "@/components/ui/button"
 import { RefreshCwIcon as RefreshIcon, SlidersIcon } from "lucide-react"
-import { Card } from "./ui/card"
-import { Slider } from "./ui/slider"
-import { Label } from "./ui/label"
-import { Switch } from "./ui/switch"
+import { Card } from "@/components/ui/card"
+import { Slider } from "@/components/ui/slider"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 
 interface GLSLPreviewProps {
   code: string
@@ -28,15 +28,15 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
   const animationRef = useRef<number | null>(null)
   const startTimeRef = useRef<number>(Date.now())
   const mousePositionRef = useRef<[number, number]>([0, 0])
-  const programRef = useRef<WebGLProgram | null>(null) // Ref to store the program
+  const programRef = useRef<WebGLProgram | null>(null)
   const glRef = useRef<WebGLRenderingContext | null>(null)
 
-  // Initialize WebGL context and compile shader
   useEffect(() => {
     if (!canvasRef.current) return
-
+    
     const canvas = canvasRef.current
-    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
+    const gl = canvas.getContext("webgl") as WebGLRenderingContext || 
+              canvas.getContext("experimental-webgl") as WebGLRenderingContext
 
     if (!gl) {
       setError("WebGL is not supported in your browser")
@@ -45,7 +45,6 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
 
     glRef.current = gl
 
-    // Resize canvas to fit container
     const resizeCanvas = () => {
       const container = canvas.parentElement
       if (container) {
@@ -62,25 +61,23 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
     resizeCanvas()
     window.addEventListener("resize", resizeCanvas)
 
-    // Track mouse position
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect()
       const x = e.clientX - rect.left
-      const y = rect.height - (e.clientY - rect.top) // Flip y-coordinate for WebGL
+      const y = canvas.height - (e.clientY - rect.top)
       mousePositionRef.current = [x, y]
+      setUniforms((prev) => ({ ...prev, u_mouse: [x, y] }))
     }
 
     canvas.addEventListener("mousemove", handleMouseMove)
 
-    // Vertex shader source
     const vertexShaderSource = `
       attribute vec2 a_position;
       void main() {
-        gl_Position = vec4(a_position, 0.0, 1.0);
+        gl_Position = vec4(a_position, 0, 1);
       }
     `
 
-    // Create shaders
     const vertexShader = gl.createShader(gl.VERTEX_SHADER)
     if (!vertexShader) {
       setError("Failed to create vertex shader")
@@ -101,7 +98,7 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
       return
     }
 
-    let newProgram: WebGLProgram | null = null // Declare newProgram here
+    let newProgram: WebGLProgram | null = null
 
     try {
       gl.shaderSource(fragmentShader, code)
@@ -112,7 +109,6 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
         return
       }
 
-      // Create program
       const program = gl.createProgram()
       if (!program) {
         setError("Failed to create program")
@@ -128,34 +124,29 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
         return
       }
 
-      newProgram = program // Assign the created program
+      newProgram = program
 
-      // Create a buffer for the position of the rectangle corners
       const positionBuffer = gl.createBuffer()
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
       gl.bufferData(
         gl.ARRAY_BUFFER,
-        new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), // Full screen quad
+        new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
         gl.STATIC_DRAW,
       )
 
-      // Get attribute location
       const positionAttributeLocation = gl.getAttribLocation(program, "a_position")
       gl.enableVertexAttribArray(positionAttributeLocation)
       gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0)
 
-      // Get uniform locations
       const timeUniformLocation = gl.getUniformLocation(program, "u_time")
       const mouseUniformLocation = gl.getUniformLocation(program, "u_mouse")
       const resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution")
 
-      // Animation loop
       const render = (timestamp: number) => {
         if (!glRef.current || !programRef.current) return
 
         const elapsedTime = ((Date.now() - startTimeRef.current) / 1000) * params.speed
 
-        // Update uniforms
         if (timeUniformLocation) {
           glRef.current.uniform1f(timeUniformLocation, params.animate ? elapsedTime : uniforms.u_time)
         }
@@ -168,16 +159,13 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
           glRef.current.uniform2f(resolutionUniformLocation, canvas.width, canvas.height)
         }
 
-        // Draw
         glRef.current.drawArrays(glRef.current.TRIANGLE_STRIP, 0, 4)
 
-        // Request next frame
         if (params.animate) {
           animationRef.current = requestAnimationFrame(render)
         }
       }
 
-      // Start animation
       if (params.animate) {
         if (animationRef.current) {
           cancelAnimationFrame(animationRef.current)
@@ -192,7 +180,7 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
       console.error("Shader error:", err)
       setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
-      programRef.current = newProgram // Update the ref in the finally block
+      programRef.current = newProgram
     }
 
     return () => {
@@ -220,7 +208,6 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
       cancelAnimationFrame(animationRef.current)
       animationRef.current = null
     }
-    // Force re-render
     setUniforms({ ...uniforms })
   }
 
@@ -238,15 +225,8 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b p-2 flex items-center">
-        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2">
-          <RefreshIcon className="h-4 w-4 mr-1" />
-          Refresh
-        </Button>
-        <Button size="sm" variant={showControls ? "default" : "outline"} onClick={toggleControls} className="ml-auto">
-          <SlidersIcon className="h-4 w-4 mr-1" />
-          Controls
-        </Button>
+      <div className={`flex-1 bg-muted ${showControls ? "h-2/3" : "h-full"}`}>
+        <canvas ref={canvasRef} className="w-full h-full" />
       </div>
 
       {error && (
@@ -254,10 +234,6 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
           {error}
         </div>
       )}
-
-      <div className={`flex-1 bg-muted ${showControls ? "h-2/3" : "h-full"}`}>
-        <canvas ref={canvasRef} className="w-full h-full" />
-      </div>
 
       {showControls && (
         <Card className="h-1/3 overflow-auto p-4 m-2">
@@ -289,6 +265,20 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
           </div>
         </Card>
       )}
+
+      <div className="border-t p-1.5 flex items-center gap-1 bg-muted/50">
+        <Button size="icon" variant="ghost" onClick={handleRefresh} className="h-7 w-7">
+          <RefreshIcon className="h-3.5 w-3.5" />
+        </Button>
+        <Button 
+          size="icon" 
+          variant={showControls ? "secondary" : "ghost"} 
+          onClick={toggleControls} 
+          className="h-7 w-7 ml-auto"
+        >
+          <SlidersIcon className="h-3.5 w-3.5" />
+        </Button>
+      </div>
     </div>
   )
 }
