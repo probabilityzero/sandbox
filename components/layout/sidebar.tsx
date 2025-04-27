@@ -136,7 +136,7 @@ export function Sidebar() {
         <div className="px-3 py-2">
           <NewProjectButton 
             fullWidth 
-            className="bg-secondary/50 hover:bg-secondary border-accent text-center h-9 font-medium"
+            className="bg-secondary/50 hover:bg-secondary border border-accent text-center h-9 font-medium"
           />
         </div>
         
@@ -259,7 +259,7 @@ export function Sidebar() {
             toggle()
           }}
         >
-          <MenuSquareIcon className="h-6 w-6" />
+          <MenuIcon className="h-6 w-6" />
         </Button>
       )}
     </>

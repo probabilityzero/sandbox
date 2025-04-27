@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero section */}
-      <header className="w-full border-b sticky top-0 z-50 bg-background">
+      <header className="w-full border-b sticky top-0 z-40 bg-background">
         <div className="container flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 flex items-center justify-center">

@@ -29,7 +29,7 @@ export function Header({ title, actions }: HeaderProps) {
       <div className="container flex flex-col md:flex-row md:items-center gap-4">
         <div className="flex-1">
           {typeof title === 'string' ? (
-            <h1 className="text-lg md:text-2xl font-semibold ml-4">{title}</h1>
+            <h1 className="text-lg md:text-xl font-semibold ml-4">{title}</h1>
           ) : (
             title
           )}

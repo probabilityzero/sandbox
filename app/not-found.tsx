@@ -27,24 +27,17 @@ export default function NotFound() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 mt-6">
+          <Button variant="outline" onClick={handleGoBack}>
+            <ArrowLeftIcon className="mr-1 h-4 w-4" />
+            Go Back
+          </Button>
+          
           <Button asChild>
             <Link href="/">
-              <HomeIcon className="mr-2 h-4 w-4" />
+              <HomeIcon className="mr-1 h-4 w-4" />
               Go Home
             </Link>
           </Button>
-          
-          <Button variant="outline" onClick={handleGoBack}>
-            <ArrowLeftIcon className="mr-2 h-4 w-4" />
-            Go Back
-          </Button>
-        </div>
-      </div>
-      
-      {/* Grid sandbox branding */}
-      <div className="text-muted-foreground text-sm mt-16">
-        <div className="flex items-center justify-center gap-2">
-          <span>Grid Sandbox</span>
         </div>
       </div>
     </div>
