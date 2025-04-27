@@ -78,7 +78,7 @@ export function NewProjectButton({ fullWidth = false, className }: NewProjectBut
               <Icon className={`mr-2 h-4 w-4 ${option.color}`} />
               <span>
                 {option.label}
-                {option.framework && ` (${option.framework})`}
+                {option.framework && ` ${option.framework}`}
               </span>
             </DropdownMenuItem>
           )

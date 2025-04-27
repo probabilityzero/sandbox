@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { NewProjectButton } from "@/components/new-project-button"
-import { RecentProjects } from "@/components/recent-projects"
+import { RecentProjects } from "@/components/layout/recent-projects"
 import {
   MenuIcon,
   PanelLeftCloseIcon,

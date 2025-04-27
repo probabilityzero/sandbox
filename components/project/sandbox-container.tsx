@@ -1,6 +1,6 @@
 "use client"
 
-import { CodeEditor } from "../code-editor"
+import { CodeEditor } from "./code-editor"
 import { JavaScriptPreview } from "./engine/javascript-preview"
 import { PythonPreview } from "./engine/python-preview"
 import { GLSLPreview } from "./engine/glsl-preview"
@@ -30,6 +30,7 @@ import {
 } from "../ui/tooltip"
 import { SiJavascript, SiPython, SiWebgl } from "react-icons/si"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog"
+import { ProjectToolbar } from "./project-toolbar"
 
 export function EditorContainer() {
   const { 
@@ -168,131 +169,38 @@ export function EditorContainer() {
       )}
 
       <div className="bg-muted/30 border-b p-2 mx-1 sm:mx-2 rounded-t-lg border flex flex-wrap items-center gap-2">
-        <TooltipProvider>
-          <div className="flex items-center gap-2 flex-1">
-            <span className="flex items-center justify-center w-6 h-6">
-              {renderLanguageIcon()}
-            </span>
-            {isEditingName ? (
-              <Input 
-                value={projectName}
-                onChange={handleProjectNameChange}
-                onBlur={handleProjectNameBlur}
-                onKeyDown={handleProjectNameKeyDown}
-                className="h-8 w-auto ring-0 text-sm"
-                autoFocus
-              />
-            ) : (
-              <div 
-                className="h-8 px-3 py-1 flex items-center rounded-md cursor-pointer"
-                onClick={() => setIsEditingName(true)}
-                title="Click to edit project name"
-              >
-                <span className="text-sm font-medium truncate max-w-[200px]">{projectName}</span>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex items-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8" 
-                  onClick={() => setShowPreview(!showPreview)}
-                >
-                  {showPreview ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {showPreview ? "Hide preview" : "Show preview"}
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={saveProject}
-                >
-                  <SaveIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Save project</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={handleDownload}
-                >
-                  <DownloadIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Download code</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={handleCopyToClipboard}
-                >
-                  <CopyIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Copy to clipboard</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                >
-                  <Share2Icon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Share project</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                >
-                  <SettingsIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Project settings</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-red-500 hover:text-red-600"
-                  onClick={() => setShowDeleteDialog(true)}
-                >
-                  <TrashIcon className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete project</TooltipContent>
-            </Tooltip>
-          </div>
-        </TooltipProvider>
+        <div className="flex items-center gap-2 flex-1">
+          <span className="flex items-center justify-center w-6 h-6">
+            {renderLanguageIcon()}
+          </span>
+          {isEditingName ? (
+            <Input 
+              value={projectName}
+              onChange={handleProjectNameChange}
+              onBlur={handleProjectNameBlur}
+              onKeyDown={handleProjectNameKeyDown}
+              className="h-8 w-auto ring-0 text-sm"
+              autoFocus
+            />
+          ) : (
+            <div 
+              className="h-8 px-3 py-1 flex items-center rounded-md cursor-pointer"
+              onClick={() => setIsEditingName(true)}
+              title="Click to edit project name"
+            >
+              <span className="text-sm font-medium truncate max-w-[200px]">{projectName}</span>
+            </div>
+          )}
+        </div>
+        
+        <ProjectToolbar 
+          showPreview={showPreview}
+          setShowPreview={setShowPreview}
+          saveProject={saveProject}
+          handleDownload={handleDownload}
+          handleCopyToClipboard={handleCopyToClipboard}
+          setShowDeleteDialog={setShowDeleteDialog}
+        />
       </div>
 
       <div className={cn(
@@ -310,7 +218,6 @@ export function EditorContainer() {
         )}
       </div>
       
-      {/* Delete confirmation dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
