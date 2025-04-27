@@ -63,7 +63,6 @@ export function NewProjectButton({ fullWidth = false, className }: NewProjectBut
             className
           )}
         >
-          {!className?.includes("text-center") && <PlusIcon className="h-4 w-4 mr-1" />}
           New Project
         </Button>
       </DropdownMenuTrigger>

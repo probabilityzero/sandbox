@@ -1,9 +1,9 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "@/styles/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Sidebar } from "@/components/sidebar"
+import { Sidebar } from "@/components/layout/sidebar"
 import { ProjectProvider } from "@/hooks/use-projects"
 import { SidebarProvider } from "@/hooks/use-sidebar"
 
@@ -14,11 +14,16 @@ export const metadata: Metadata = {
   description: "A browser-based creative coding platform for experimenting with JavaScript, Python, and shader programming",
   keywords: ["creative coding", "editor", "p5.js", "javascript", "python", "glsl", "sandbox"],
   authors: [{ name: "Grid Sandbox Team" }],
-  viewport: "width=device-width, initial-scale=1",
   icons: {
     icon: "/cube-logo.svg",
     apple: "/cube-logo.svg",
   },
+}
+
+// Separate viewport configuration as per Next.js documentation
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 }
 
 export default function RootLayout({

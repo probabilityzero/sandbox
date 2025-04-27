@@ -5,44 +5,52 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { NewProjectButton } from "@/components/new-project-button"
-import { 
-  MenuIcon, 
-  XIcon, 
-  PanelLeftCloseIcon, 
-  PanelLeftIcon, 
+import { RecentProjects } from "@/components/recent-projects"
+import {
+  MenuIcon,
+  PanelLeftCloseIcon,
+  PanelLeftIcon,
   FolderIcon,
   UsersIcon,
   BookOpenIcon,
   ChevronRightIcon,
   ChevronDownIcon,
-  BrushIcon
+  BrushIcon,
+  SettingsIcon,
+  UserIcon,
+  LifeBuoyIcon,
+  LogOutIcon
 } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useSidebar } from "@/hooks/use-sidebar"
 import { useProjects } from "@/hooks/use-projects"
-import type { Project } from "@/types/project"
 import Image from "next/image"
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from "@/components/ui/popover"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
 
 export function Sidebar() {
   const { isOpen, isMobile, toggle, close } = useSidebar()
-  const { projects, createNewProject } = useProjects()
-  const [recentProjects, setRecentProjects] = useState<Project[]>([])
+  const { projects } = useProjects()
+  const router = useRouter()
   const [expandedSections, setExpandedSections] = useState({
-    recent: true,
     examples: false,
     tutorials: false
   })
   
-  useEffect(() => {
-    if (projects && projects.length > 0) {
-      const sorted = [...projects].sort((a, b) => {
-        return new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime()
-      }).slice(0, 10)
-      
-      setRecentProjects(sorted)
-    }
-  }, [projects])
-
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -72,6 +80,16 @@ export function Sidebar() {
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isOpen, isMobile, close])
+  
+  const handleNavClick = (e: React.MouseEvent, path: string) => {
+    if (isMobile) {
+      e.preventDefault()
+      close()
+      setTimeout(() => {
+        router.push(path)
+      }, 10)
+    }
+  }
 
   return (
     <>
@@ -92,7 +110,7 @@ export function Sidebar() {
         id="sidebar-container"
         className={cn(
           "top-0 bottom-0 bg-background border-r border-border z-40 flex flex-col h-screen",
-          isMobile ? "fixed" : "absolute", 
+          isMobile ? "fixed" : "fixed", // Changed from "absolute" to "fixed" for desktop
           isOpen ? (isMobile ? "w-[280px]" : "w-60") : "w-0",
           isOpen ? "left-0" : "-left-80", 
           "transition-all duration-300"
@@ -120,21 +138,23 @@ export function Sidebar() {
         </div>
         
         <div className="flex flex-col space-y-1 px-3 py-2">
-          <Link 
+          <a 
             href="/dashboard" 
+            onClick={(e) => handleNavClick(e, "/dashboard")}
             className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
           >
             <FolderIcon className="h-4 w-4" />
             <span className="text-sm">My Projects</span>
-          </Link>
+          </a>
           
-          <Link 
+          <a
             href="/community" 
+            onClick={(e) => handleNavClick(e, "/community")}
             className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
           >
             <UsersIcon className="h-4 w-4" />
             <span className="text-sm">Community</span>
-          </Link>
+          </a>
         </div>
 
         <div className="flex flex-col space-y-1 px-3">
@@ -168,45 +188,45 @@ export function Sidebar() {
         </div>
         
         <div className="flex-1 overflow-auto mt-2">
-          <button 
-            className="flex items-center justify-between pl-5 pr-6 py-1.5 w-full text-left text-muted-foreground hover:text-foreground"
-            onClick={() => toggleSection('recent')}
-          >
-            <span className="text-xs">Recent</span>
-            {expandedSections.recent ? 
-              <ChevronDownIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : 
-              <ChevronRightIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-            }
-          </button>
-          
-          {expandedSections.recent && (
-            <div className="flex flex-col">
-              {recentProjects.length > 0 ? (
-                recentProjects.map((project) => (
-                  <Link
-                    key={project.id}
-                    href={`/project/${project.id}`}
-                    className="flex items-center gap-2 px-5 py-1.5 text-sm text-foreground hover:bg-accent"
-                  >
-                    {project.language === "javascript" && <span className="text-yellow-400 text-xs">JS</span>}
-                    {project.language === "python" && <span className="text-blue-400 text-xs">PY</span>}
-                    {project.language === "glsl" && <span className="text-purple-400 text-xs">GL</span>}
-                    <span className="truncate">{project.name}</span>
-                  </Link>
-                ))
-              ) : (
-                <div className="px-5 py-2 text-sm text-muted-foreground italic">
-                  No recent projects
-                </div>
-              )}
-            </div>
-          )}
+          <RecentProjects projects={projects} />
         </div>
         
-        <div className="p-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Theme</span>
-            <ThemeToggle />
+        <div className="border-t border-border mt-auto">
+          <div className="p-3 flex items-center justify-between">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="flex items-center gap-2 px-3 py-1.5 h-9 w-full justify-start">
+                  <SettingsIcon className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">Settings</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="flex justify-between cursor-default">
+                  Theme
+                  <ThemeToggle />
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <UserIcon className="h-4 w-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <LifeBuoyIcon className="h-4 w-4 mr-2" />
+                    Support
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <LogOutIcon className="h-4 w-4 mr-2" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

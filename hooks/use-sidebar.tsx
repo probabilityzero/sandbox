@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react"
+import { createContext, useContext, useState, useEffect } from "react"
 
 interface SidebarContextType {
   isOpen: boolean
@@ -12,31 +12,41 @@ interface SidebarContextType {
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 
-export function SidebarProvider({ children }: { children: ReactNode }) {
+export function SidebarProvider({ 
+  children 
+}: { 
+  children: React.ReactNode 
+}) {
   const [isOpen, setIsOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
-
+  
+  const checkIsMobile = () => {
+    setIsMobile(window.innerWidth < 768)
+  }
+  
   useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 768
-      setIsMobile(mobile)
-      if (mobile && isOpen) {
-        setIsOpen(false)
-      } else if (!mobile && !isOpen) {
-        setIsOpen(true)
-      }
+    checkIsMobile()
+    
+    if (window.innerWidth < 768) {
+      setIsOpen(false)
     }
     
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    
-    return () => window.removeEventListener("resize", checkMobile)
+    window.addEventListener('resize', checkIsMobile)
+    return () => window.removeEventListener('resize', checkIsMobile)
   }, [])
-
-  const toggle = () => setIsOpen(!isOpen)
-  const open = () => setIsOpen(true)
-  const close = () => setIsOpen(false)
-
+  
+  const toggle = () => {
+    setIsOpen(prev => !prev)
+  }
+  
+  const open = () => {
+    setIsOpen(true)
+  }
+  
+  const close = () => {
+    setIsOpen(false)
+  }
+  
   return (
     <SidebarContext.Provider value={{ isOpen, isMobile, toggle, open, close }}>
       {children}
@@ -46,8 +56,10 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
 
 export function useSidebar() {
   const context = useContext(SidebarContext)
-  if (context === undefined) {
+  
+  if (!context) {
     throw new Error("useSidebar must be used within a SidebarProvider")
   }
+  
   return context
 }

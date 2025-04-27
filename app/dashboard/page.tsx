@@ -1,12 +1,12 @@
 "use client"
 
 import { useProjects } from "@/hooks/use-projects"
-import { Button } from "@/components/ui/button"
-import { PlusIcon, CodeIcon, SearchIcon } from "lucide-react"
+import { CodeIcon, SearchIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useState, useEffect } from "react"
 import { NewProjectButton } from "@/components/new-project-button"
 import { ProjectCard } from "@/components/project-card"
+import { Header } from "@/components/layout/header"
 
 export default function Dashboard() {
   const { projects, currentProject, changeProject } = useProjects()
@@ -24,30 +24,27 @@ export default function Dashboard() {
     }
   }, [searchTerm, projects])
 
+  const headerActions = (
+    <>
+      <div className="relative flex-1 md:flex-none">
+        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input 
+          placeholder="Search projects" 
+          className="pl-10 w-full"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      <NewProjectButton />
+    </>
+  )
+
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="border-b">
-        <div className="container py-4 flex flex-col md:flex-row md:items-center gap-4">
-          <div className="flex-1">
-            <h1 className="text-2xl md:text-3xl font-bold">My Projects</h1>
-            <p className="text-muted-foreground mt-1">
-              Manage your creative coding projects
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search projects" 
-                className="pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <NewProjectButton />
-          </div>
-        </div>
-      </div>
+      <Header 
+        title="My Projects"
+        actions={headerActions}
+      />
 
       <div className="container py-8">
         {filteredProjects.length > 0 ? (

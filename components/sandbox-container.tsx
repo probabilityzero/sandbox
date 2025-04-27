@@ -4,7 +4,6 @@ import { CodeEditor } from "./code-editor"
 import { JavaScriptPreview } from "./engine/javascript-preview"
 import { PythonPreview } from "./engine/python-preview"
 import { GLSLPreview } from "./engine/glsl-preview"
-import { ProjectSelector } from "./project-selector"
 import { useProjects } from "@/hooks/use-projects"
 import { useSidebar } from "@/hooks/use-sidebar"
 import { Button } from "./ui/button"
@@ -158,11 +157,8 @@ export function EditorContainer() {
   }
 
   return (
-    <div className={cn("flex flex-col min-h-dvh w-full")}>
-      <div className="h-14 p-2 flex items-center">
-        <div className="flex-1 flex items-center justify-center">
-          <ProjectSelector projects={projects} currentProject={currentProject} onProjectChange={changeProject} />
-        </div>
+    <div className={cn("flex flex-col h-dvh w-full")}>
+      <div className="h-12 p-2 flex items-center">
       </div>
 
       {error && (

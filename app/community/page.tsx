@@ -7,8 +7,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ChevronDownIcon, SearchIcon } from "lucide-react"
 import Link from "next/link"
 import { ProjectCard, ProjectCardProps } from "@/components/project-card"
+import { Header } from "@/components/layout/header"
 
-// Sample community project data
 const communityProjects: ProjectCardProps[] = [
   {
     id: 1,
@@ -165,20 +165,19 @@ export default function Community() {
         (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     : communityProjects
+
+  const headerTitle = (
+    <div className="flex flex-col md:flex-row md:items-center gap-2">
+      <h1 className="text-xl md:text-2xl font-bold">Community</h1>
+      <div className="flex space-x-4 text-sm font-medium text-muted-foreground">
+        <Link href="/community/submissions">My Submissions</Link>
+      </div>
+    </div>
+  )
   
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="border-b">
-        <div className="container py-4 flex flex-col md:flex-row md:items-center gap-4">
-          <div className="flex-1">
-            <h1 className="text-2xl md:text-3xl font-bold">Community</h1>
-            <div className="flex space-x-4 mt-2">
-              <Link href="/community" className="text-sm font-medium">Discover</Link>
-              <Link href="/community/submissions" className="text-sm font-medium text-muted-foreground">My Submissions</Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header title={headerTitle} />
       
       <div className="container py-8 space-y-8">
         {/* Icons and header */}
@@ -222,7 +221,7 @@ export default function Community() {
         
         {/* Tabs */}
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="flex justify-center space-x-1 overflow-x-auto">
+          <TabsList className="flex justify-center bg-transparent space-x-1 overflow-x-auto">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="javascript">JavaScript</TabsTrigger>
             <TabsTrigger value="python">Python</TabsTrigger>
