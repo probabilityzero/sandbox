@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import { EditorContainer } from "@/components/sandbox-container"
+import { EditorContainer } from "@/components/project/sandbox-container"
 import { useProjects } from "@/hooks/use-projects"
 import { useParams } from "next/navigation"
 

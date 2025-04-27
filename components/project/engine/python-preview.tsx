@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { PlayIcon, PauseIcon, RefreshCwIcon as RefreshIcon, TerminalIcon, LoaderIcon } from "lucide-react"
-import { Card } from "../ui/card"
-import { Progress } from "../ui/progress"
+import { Card } from "../../ui/card"
+import { Progress } from "../../ui/progress"
 
 interface PythonPreviewProps {
   code: string

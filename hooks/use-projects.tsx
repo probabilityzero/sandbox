@@ -4,7 +4,6 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import type { Project, LanguageType, Version } from "@/types/project"
 import { db } from "@/lib/db"
 
-// Default code templates for different languages
 const DEFAULT_TEMPLATES: Record<LanguageType, string> = {
   javascript: `function setup() {
   createCanvas(400, 400);
@@ -40,7 +39,6 @@ void main() {
 }`
 }
 
-// Optional properties when creating a project
 type ProjectOptions = {
   name?: string;
   code?: string;

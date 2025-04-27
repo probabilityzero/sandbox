@@ -1,14 +1,14 @@
 "use client"
 
-import { CodeEditor } from "./code-editor"
+import { CodeEditor } from "../code-editor"
 import { JavaScriptPreview } from "./engine/javascript-preview"
 import { PythonPreview } from "./engine/python-preview"
 import { GLSLPreview } from "./engine/glsl-preview"
 import { useProjects } from "@/hooks/use-projects"
 import { useSidebar } from "@/hooks/use-sidebar"
-import { Button } from "./ui/button"
-import { Input } from "./ui/input"
-import { Toggle } from "./ui/toggle"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { Toggle } from "../ui/toggle"
 import { 
   SaveIcon, 
   EyeIcon, 
@@ -27,9 +27,9 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
-} from "./ui/tooltip"
+} from "../ui/tooltip"
 import { SiJavascript, SiPython, SiWebgl } from "react-icons/si"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog"
 
 export function EditorContainer() {
   const { 
@@ -179,12 +179,12 @@ export function EditorContainer() {
                 onChange={handleProjectNameChange}
                 onBlur={handleProjectNameBlur}
                 onKeyDown={handleProjectNameKeyDown}
-                className="h-8 w-[200px] text-sm"
+                className="h-8 w-auto ring-0 text-sm"
                 autoFocus
               />
             ) : (
               <div 
-                className="h-8 px-3 py-1 flex items-center border border-transparent hover:border-border rounded-md cursor-pointer"
+                className="h-8 px-3 py-1 flex items-center rounded-md cursor-pointer"
                 onClick={() => setIsEditingName(true)}
                 title="Click to edit project name"
               >
