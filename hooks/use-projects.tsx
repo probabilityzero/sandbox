@@ -50,10 +50,11 @@ interface ProjectsContextType {
   code: string
   language: LanguageType
   error: string | null
+  isLoading: boolean
   setCode: (code: string) => void
-  createNewProject: (language: LanguageType, options?: ProjectOptions) => void
+  createNewProject: (language: LanguageType, options?: ProjectOptions) => Promise<number | null>
   saveProject: () => void
-  changeProject: (id: number) => void
+  changeProject: (id: number) => boolean
   updateProjectName: (id: number, name: string) => void
   deleteProject: (id: number) => void
 }
@@ -66,32 +67,54 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [code, setCode] = useState("")
   const [language, setLanguage] = useState<LanguageType>("javascript")
   const [error, setError] = useState<string | null>(null)
-
-  // Load projects from database
+  const [isLoading, setIsLoading] = useState(true)
+  
+  // Load projects from database - update this effect to avoid auto-loading the most recent project
   useEffect(() => {
     const loadProjects = async () => {
       try {
+        setIsLoading(true)
         const dbProjects = await db.projects.toArray()
         setProjects(dbProjects)
         
-        // If there are projects, select the most recently updated one
-        if (dbProjects.length > 0) {
+        // Only load the most recent project if there's no current project
+        // This prevents overriding a project loaded by ID
+        if (dbProjects.length > 0 && !currentProject) {
+          // Check if we have a project ID in the URL
+          const pathSegments = window.location.pathname.split('/')
+          const projectIdFromUrl = pathSegments.length > 2 && pathSegments[1] === 'project' 
+            ? Number(pathSegments[2]) 
+            : null
+            
+          if (projectIdFromUrl) {
+            // If we're on a project page, load that specific project
+            const projectFromUrl = dbProjects.find(p => p.id === projectIdFromUrl)
+            if (projectFromUrl) {
+              setCurrentProject(projectFromUrl)
+              setCode(projectFromUrl.code || '')
+              setLanguage(projectFromUrl.language)
+              setIsLoading(false)
+              return
+            }
+          }
+          
+          // Otherwise, load the most recently updated project
           const sortedProjects = [...dbProjects].sort((a, b) => {
             return new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime()
           })
           const latestProject = sortedProjects[0]
           setCurrentProject(latestProject)
-          
-          // Make sure to use the project's actual code, not just the template
           setCode(latestProject.code || '')
           setLanguage(latestProject.language)
-        } else {
+        } else if (dbProjects.length === 0) {
           // Create a default project if none exists
-          createNewProject("javascript")
+          await createNewProject("javascript")
         }
       } catch (err) {
         console.error("Failed to load projects:", err)
         setError("Failed to load projects from database")
+      } finally {
+        setIsLoading(false)
       }
     }
     
@@ -101,9 +124,9 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   // Create a new project
   const createNewProject = async (lang: LanguageType, options?: ProjectOptions) => {
     try {
-      const timestamp = new Date().toISOString();
-      const defaultCode = options?.code || DEFAULT_TEMPLATES[lang];
-      const projectName = options?.name || `New ${lang.charAt(0).toUpperCase() + lang.slice(1)} Project`;
+      const timestamp = new Date().toISOString()
+      const defaultCode = options?.code || DEFAULT_TEMPLATES[lang]
+      const projectName = options?.name || `New ${lang.charAt(0).toUpperCase() + lang.slice(1)} Project`
       
       const newProject: Project = {
         name: projectName,
@@ -122,19 +145,18 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       const id = await db.projects.add(newProject)
       newProject.id = id
       
-      setProjects([...projects, newProject])
+      setProjects(prev => [...prev, newProject])
       setCurrentProject(newProject)
       setCode(defaultCode)
       setLanguage(lang)
       setError(null)
       
-      // Redirect to the new project
-      if (typeof window !== "undefined") {
-        window.location.href = `/project/${id}`;
-      }
+      // Don't redirect programmatically - use Next.js router instead
+      return id // Return the ID so caller can navigate if needed
     } catch (err) {
       console.error("Failed to create new project:", err)
       setError("Failed to create new project")
+      return null
     }
   }
 
@@ -143,15 +165,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     if (!currentProject) return
     
     try {
-      const timestamp = new Date().toISOString();
+      const timestamp = new Date().toISOString()
       
       // Only create a new version if code has changed
-      let versions = [...(currentProject.versions || [])];
+      let versions = [...(currentProject.versions || [])]
       if (!versions.length || versions[versions.length - 1].code !== code) {
         versions.push({
           code,
           timestamp
-        });
+        })
       }
       
       const updatedProject = {
@@ -180,29 +202,22 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   }
 
   // Change to a different project
-  const changeProject = async (id: number) => {
+  const changeProject = (id: number): boolean => {
     try {
-      // Save current project first
-      if (currentProject) {
-        await saveProject()
+      // Find the project in the existing projects array
+      const project = projects.find(p => p.id === id)
+      
+      if (!project) {
+        return false
       }
       
-      const project = await db.projects.get(id)
-      if (project) {
-        setCurrentProject(project)
-        // Make sure we're using the project's specific code
-        setCode(project.code || '')
-        setLanguage(project.language)
-        setError(null)
-        
-        // Update URL to reflect the current project
-        if (typeof window !== "undefined" && !window.location.pathname.includes(`/project/${id}`)) {
-          window.history.pushState({}, '', `/project/${id}`);
-        }
-      }
+      setCurrentProject(project)
+      setCode(project.code || '')
+      setLanguage(project.language)
+      return true
     } catch (err) {
       console.error("Failed to change project:", err)
-      setError("Failed to load selected project")
+      return false
     }
   }
   
@@ -248,7 +263,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           
           // Redirect to the next project
           if (typeof window !== "undefined") {
-            window.history.pushState({}, '', `/project/${nextProject.id}`);
+            window.history.pushState({}, '', `/project/${nextProject.id}`)
           }
         } else {
           setCurrentProject(null)
@@ -256,7 +271,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           
           // Redirect to home if no projects left
           if (typeof window !== "undefined") {
-            window.history.pushState({}, '', '/');
+            window.history.pushState({}, '', '/')
           }
         }
       }
@@ -276,6 +291,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         code,
         language,
         error,
+        isLoading,
         setCode,
         createNewProject,
         saveProject,

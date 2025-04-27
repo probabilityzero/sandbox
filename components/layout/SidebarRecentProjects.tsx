@@ -65,7 +65,6 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
               <a
                 key={project.id}
                 href={`/project/${project.id}`}
-                onClick={(e) => handleProjectClick(e, project.id)}
                 className="flex items-center gap-2 px-5 py-1.5 text-sm text-foreground hover:bg-accent"
               >
                 {project.language === "javascript" && <span className="text-yellow-400 text-xs">JS</span>}

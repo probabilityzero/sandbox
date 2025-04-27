@@ -36,7 +36,6 @@ export function ProjectCard({
   isCommunity = false,
   author,
   stats,
-  isCurrent,
   onClick
 }: ProjectCardProps) {
   
@@ -100,7 +99,7 @@ export function ProjectCard({
         </div>
       </div>
       
-      <div className="p-4">
+      <div className="p-4 pt-3">
         <h3 className="font-medium mb-1 line-clamp-1">{title}</h3>
         
         {description && (
@@ -134,12 +133,6 @@ export function ProjectCard({
             <div className="text-sm text-muted-foreground">
               {stats.forks} Forks
             </div>
-          )}
-          
-          {isCurrent && (
-            <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">
-              Current
-            </span>
           )}
         </div>
       </div>

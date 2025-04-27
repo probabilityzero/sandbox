@@ -40,7 +40,6 @@ export default function Dashboard() {
                 language={project.language}
                 updatedAt={project.updatedAt}
                 isCurrent={project.id === currentProject?.id}
-                onClick={() => changeProject(project.id!)}
               />
             ))}
           </div>

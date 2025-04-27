@@ -46,18 +46,11 @@ export function EditorContainer() {
     updateProjectName,
     deleteProject
   } = useProjects()
-  const { isMobile, isOpen, toggle } = useSidebar()
+  const { isMobile } = useSidebar()
   const [showPreview, setShowPreview] = useState(true)
-  const [projectName, setProjectName] = useState(currentProject?.name || "Untitled Project")
+  const [projectName, setProjectName] = useState("")
   const [isEditingName, setIsEditingName] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  
-  useEffect(() => {
-    if (currentProject && (!code || code.trim() === "")) {
-      const defaultCode = getDefaultSketch(language)
-      setCode(defaultCode)
-    }
-  }, [currentProject, code, language, setCode])
   
   useEffect(() => {
     if (currentProject?.name) {
@@ -65,88 +58,31 @@ export function EditorContainer() {
     }
   }, [currentProject])
 
-  const handleCodeChange = (newCode: string) => {
+  const handleCodeChange = useCallback((newCode: string) => {
     setCode(newCode)
-  }
+  }, [setCode])
 
-  const handleProjectNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProjectNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setProjectName(e.target.value)
-  }
+  }, [])
   
-  const handleProjectNameBlur = () => {
+  const handleProjectNameBlur = useCallback(() => {
+    if (currentProject && projectName.trim() !== currentProject.name) {
+      updateProjectName(currentProject.id!, projectName.trim() || "Untitled Project")
+    }
     setIsEditingName(false)
-    if (currentProject && projectName !== currentProject.name) {
-      updateProjectName(currentProject.id!, projectName)
-    }
-  }
+  }, [currentProject, projectName, updateProjectName])
   
-  const handleProjectNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleProjectNameKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
+      handleProjectNameBlur()
+    } else if (e.key === 'Escape') {
+      setProjectName(currentProject?.name || "Untitled Project")
       setIsEditingName(false)
-      if (currentProject && projectName !== currentProject.name) {
-        updateProjectName(currentProject.id!, projectName)
-      }
     }
-  }
-
-  const handleDownload = useCallback(() => {
-    let filename = ''
-    let fileContent = ''
-    
-    switch (language) {
-      case "javascript":
-        filename = `${projectName || 'sketch'}.js`
-        fileContent = code
-        break
-      case "python":
-        filename = `${projectName || 'sketch'}.py`
-        fileContent = code
-        break
-      case "glsl":
-        filename = `${projectName || 'sketch'}.glsl`
-        fileContent = code
-        break
-    }
-    
-    const blob = new Blob([fileContent], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }, [code, language, projectName])
-
-  const handleCopyToClipboard = useCallback(() => {
-    navigator.clipboard.writeText(code)
-      .then(() => {
-        console.log('Code copied to clipboard')
-        // Could show a toast notification here
-      })
-      .catch(err => {
-        console.error('Failed to copy code: ', err)
-      })
-  }, [code])
+  }, [currentProject, handleProjectNameBlur])
   
-  const handleDeleteProject = () => {
-    if (currentProject) {
-      deleteProject(currentProject.id!)
-      setShowDeleteDialog(false)
-    }
-  }
-
-  const handleResetToDefault = useCallback(() => {
-    if (language) {
-      const defaultCode = getDefaultSketch(language)
-      setCode(defaultCode)
-    }
-  }, [language, setCode])
-
-  const renderPreview = () => {
-    if (!showPreview) return null
-    
+  const renderPreview = useCallback(() => {
     switch (language) {
       case "javascript":
         return <JavaScriptPreview code={code} />
@@ -155,22 +91,14 @@ export function EditorContainer() {
       case "glsl":
         return <GLSLPreview code={code} />
       default:
-        return <JavaScriptPreview code={code} />
+        return <div>Preview not available for this language</div>
     }
-  }
+  }, [code, language])
 
-  const renderLanguageIcon = () => {
-    switch (language) {
-      case "javascript":
-        return <SiJavascript className="h-4 w-4 text-yellow-400" />
-      case "python":
-        return <SiPython className="h-4 w-4 text-blue-500" />
-      case "glsl":
-        return <SiWebgl className="h-4 w-4 text-purple-500" />
-      default:
-        return <CodeIcon className="h-4 w-4" />
-    }
-  }
+  const handleResetToDefault = useCallback(() => {
+    const defaultCode = getDefaultSketch(language)
+    setCode(defaultCode)
+  }, [language, setCode])
 
   return (
     <div className={cn("flex flex-col h-dvh w-full")}>
@@ -186,7 +114,10 @@ export function EditorContainer() {
       <div className="bg-muted/30 border-b p-2 mx-1 sm:mx-2 rounded-t-lg border flex flex-wrap items-center gap-2">
         <div className="flex items-center gap-2 flex-1">
           <span className="flex items-center justify-center w-6 h-6">
-            {renderLanguageIcon()}
+            {language === "javascript" ? <SiJavascript className="h-4 w-4 text-yellow-400" /> : 
+             language === "python" ? <SiPython className="h-4 w-4 text-blue-500" /> : 
+             language === "glsl" ? <SiWebgl className="h-4 w-4 text-purple-500" /> : 
+             <CodeIcon className="h-4 w-4" />}
           </span>
           {isEditingName ? (
             <Input 
@@ -212,8 +143,23 @@ export function EditorContainer() {
           showPreview={showPreview}
           setShowPreview={setShowPreview}
           saveProject={saveProject}
-          handleDownload={handleDownload}
-          handleCopyToClipboard={handleCopyToClipboard}
+          handleDownload={() => {
+            let filename = `${projectName || 'sketch'}.${language === "javascript" ? "js" : language === "python" ? "py" : "glsl"}`
+            const blob = new Blob([code], { type: 'text/plain' })
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = filename
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(url)
+          }}
+          handleCopyToClipboard={() => {
+            navigator.clipboard.writeText(code)
+              .then(() => console.log('Code copied to clipboard'))
+              .catch(err => console.error('Failed to copy code: ', err))
+          }}
           setShowDeleteDialog={setShowDeleteDialog}
           resetToDefault={handleResetToDefault}
         />
@@ -245,7 +191,12 @@ export function EditorContainer() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteProject} className="bg-red-500 hover:bg-red-600">
+            <AlertDialogAction onClick={() => {
+              if (currentProject) {
+                deleteProject(currentProject.id!)
+                setShowDeleteDialog(false)
+              }
+            }} className="bg-red-500 hover:bg-red-600">
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

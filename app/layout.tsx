@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   },
 }
 
-// Separate viewport configuration as per Next.js documentation
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -35,6 +34,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/cube-logo.svg" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
       </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>

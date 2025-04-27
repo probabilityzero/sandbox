@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { NewProjectButton } from "@/components/new-project-button"
-import { RecentProjects } from "@/components/layout/recent-projects"
+import { RecentProjects } from "@/components/layout/SidebarRecentProjects"
 import {
   MenuIcon,
   PanelLeftCloseIcon,
@@ -195,10 +195,10 @@ export function Sidebar() {
         </div>
         
         <div className="border-t border-border mt-auto">
-          <div className="p-3 flex items-center justify-between">
+          <div className="p-3 py-1.5 flex items-center justify-between">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center gap-2 px-3 py-1.5 h-9 w-full justify-start">
+                <Button variant="ghost" size="sm" className="flex items-center gap-2 px-2 py-1 h-9 w-full justify-start">
                   <SettingsIcon className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">Settings</span>
                 </Button>
