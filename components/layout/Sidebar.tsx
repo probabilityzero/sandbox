@@ -55,7 +55,8 @@ export function Sidebar() {
   const pathname = usePathname()
   const [expandedSections, setExpandedSections] = useState({
     myProjects: false,
-    discover: false
+    discover: false,
+    recents: true
   })
   
   const isRootPath = ['/', '/contribute', '/learn', '/legal/terms', '/legal/privacy', '/legal/cookies', '/auth'].includes(pathname)
@@ -171,62 +172,97 @@ export function Sidebar() {
         
         <div className="flex flex-col px-3 pt-1">
           {/* My Projects group */}
-            <div className="mt-1 flex flex-col">
-              <a 
-                href="/dashboard" 
-                onClick={(e) => handleNavClick(e, "/dashboard")}
-                className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground"
-              >
-                <FolderIcon className="h-3.5 w-3.5" />
-                My Repository
-              </a>
-              <a 
-                href="/dashboard?saved=true" 
-                onClick={(e) => handleNavClick(e, "/dashboard?saved=true")}
-                className="text-sm py-1.5 hover:text-primary px-3 rounded-md flex items-center text-foreground gap-2"
-              >
-                <SaveIcon className="h-3.5 w-3.5" />
-                Saved Collections
-              </a>
-            </div>
+          <div className="mt-1">
+            <button 
+              className="flex items-center justify-between px-3 py-1.5 w-full text-left rounded-md hover:bg-accent text-foreground"
+              onClick={() => toggleSection('myProjects')}
+            >
+              <div className="flex items-center gap-2">
+                <FolderIcon className="h-4 w-4" />
+                <span className="text-sm">My Repository</span>
+              </div>
+              {expandedSections.myProjects ? 
+                <ChevronDownIcon className="h-4 w-4" /> : 
+                <ChevronRightIcon className="h-4 w-4" />
+              }
+            </button>
+            
+            {expandedSections.myProjects && (
+              <div className="ml-8 mt-1 flex flex-col">
+                <a 
+                  href="/dashboard" 
+                  onClick={(e) => handleNavClick(e, "/dashboard")}
+                  className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground flex items-center gap-2"
+                >
+                  <LucideFolderCode className="h-3.5 w-3.5" />
+                  <span>My Projects</span>
+                </a>
+                <a 
+                  href="/dashboard?saved=true" 
+                  onClick={(e) => handleNavClick(e, "/dashboard?saved=true")}
+                  className="text-sm py-1.5 hover:text-primary px-3 rounded-md flex items-center text-foreground gap-2"
+                >
+                  <SaveIcon className="h-3.5 w-3.5" />
+                  <span>Saved Collections</span>
+                </a>
+              </div>
+            )}
+          </div>
 
           {/* Discover group */}
+          <div className="mt-1">
+            <button 
+              className="flex items-center justify-between px-3 py-1.5 w-full text-left rounded-md hover:bg-accent text-foreground"
+              onClick={() => toggleSection('discover')}
+            >
+              <div className="flex items-center gap-2">
+                <Shapes className="h-4 w-4" />
+                <span className="text-sm">Discover</span>
+              </div>
+              {expandedSections.discover ? 
+                <ChevronDownIcon className="h-4 w-4" /> : 
+                <ChevronRightIcon className="h-4 w-4" />
+              }
+            </button>
+            
+            {expandedSections.discover && (
+              <div className="ml-8 mt-1 flex flex-col">
+                <a 
+                  href="/explore" 
+                  onClick={(e) => handleNavClick(e, "/explore")}
+                  className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground flex items-center gap-2"
+                >
+                  <CompassIcon className="h-3.5 w-3.5" />
+                  <span>Explore</span>
+                </a>
+                <a 
+                  href="/learn" 
+                  onClick={(e) => handleNavClick(e, "/learn")}
+                  className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground flex items-center gap-2"
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  <span>Learn</span>
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="flex-1 overflow-auto mt-4">
           <button 
-            className="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent text-foreground mt-1"
-            onClick={() => toggleSection('discover')}
+            className="flex items-center justify-between pl-5 pr-6 py-1.5 w-full text-left text-muted-foreground hover:text-foreground"
+            onClick={() => toggleSection('recents')}
           >
-            <div className="flex items-center gap-2">
-              <Shapes className="h-4 w-4" />
-              <span className="text-sm">Discover</span>
-            </div>
-            {expandedSections.discover ? 
-              <ChevronDownIcon className="h-4 w-4" /> : 
-              <ChevronRightIcon className="h-4 w-4" />
+            <span className="text-xs">Recent</span>
+            {expandedSections.recents ? 
+              <ChevronDownIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : 
+              <ChevronRightIcon className="h-4 w-4 text-muted-foreground hover:text-foreground" />
             }
           </button>
           
-            <div className="ml-8 mt-1 flex flex-col">
-              <a 
-                href="/explore" 
-                onClick={(e) => handleNavClick(e, "/explore")}
-                className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground"
-              >
-                <CompassIcon className="h-3.5 w-3.5" />
-                Explore
-              </a>
-              <a 
-                href="/learn" 
-                onClick={(e) => handleNavClick(e, "/learn")}
-                className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground"
-              >
-                <BookOpen className="h-3.5 w-3.5" />
-                Learn
-              </a>
-            </div>
-        </div>
-        
-        <div className="flex-1 overflow-auto mt-2">
-          <RecentProjects projects={projects} />
+          {expandedSections.recents && (
+            <RecentProjects projects={projects} />
+          )}
         </div>
         
         <div className="border-t border-border mt-auto">
