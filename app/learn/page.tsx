@@ -8,7 +8,7 @@ import { ArrowRightIcon, BookOpenIcon, GraduationCapIcon, PlayIcon, CodeIcon } f
 export default function LearnPage() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
+      <header className="border-b bg-background">
         <div className="container flex sticky top-0 items-center justify-between h-14">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center">
