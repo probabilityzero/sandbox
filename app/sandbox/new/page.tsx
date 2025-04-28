@@ -1,4 +1,4 @@
-import { EditorContainer } from "@/components/project/sandbox-new-container"
+import { EditorContainer } from "@/components/sandbox/sandbox-new-container"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Home() {
