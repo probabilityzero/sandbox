@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { Button } from "../../ui/button"
 import { PlayIcon, PauseIcon, RefreshCwIcon as RefreshIcon, TerminalIcon } from "lucide-react"
 import { Card } from "../../ui/card"
+import { MdPause, MdPlayArrow, MdReplay } from "react-icons/md"
 
 interface JavaScriptPreviewProps {
   code: string
@@ -148,21 +149,6 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b p-2 flex items-center">
-        <Button size="sm" variant="outline" onClick={toggleRunning} className="mr-2">
-          {isRunning ? <PauseIcon className="h-4 w-4" /> : <PlayIcon className="h-4 w-4" />}
-          {isRunning ? "Pause" : "Run"}
-        </Button>
-        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2">
-          <RefreshIcon className="h-4 w-4 mr-1" />
-          Refresh
-        </Button>
-        <Button size="sm" variant={showConsole ? "default" : "outline"} onClick={toggleConsole} className="ml-auto">
-          <TerminalIcon className="h-4 w-4 mr-1" />
-          Console {consoleOutput.length > 0 && `(${consoleOutput.length})`}
-        </Button>
-      </div>
-
       {error && (
         <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2 font-mono text-sm whitespace-pre-wrap">
           {error}
@@ -205,6 +191,21 @@ export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
           </div>
         </Card>
       )}
+
+      <div className="border-t p-2 h-10 flex items-center bg-background">
+        <Button size="sm" variant="outline" onClick={toggleRunning} className="mr-2">
+          {isRunning ? <MdPause className="h-3 w-2 mr-1" /> : <MdPlayArrow className="h-2 w-2 mr-1" />}
+          {isRunning ? "Pause" : "Play"}
+        </Button>
+        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2">
+          <MdReplay className="h-2 w-2 mr-1" />
+          Refresh
+        </Button>
+        <Button size="sm" variant={showConsole ? "default" : "outline"} onClick={toggleConsole} className="ml-auto">
+          <TerminalIcon className="h-2 w-2 mr-1" />
+         {consoleOutput.length > 0 && `(${consoleOutput.length})`}
+        </Button>
+      </div>
     </div>
   )
 }

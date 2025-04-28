@@ -7,6 +7,7 @@ import { Card } from "../../ui/card"
 import { Slider } from "../../ui/slider"
 import { Label } from "../../ui/label"
 import { Switch } from "../../ui/switch"
+import { MdReplay } from "react-icons/md"
 
 interface GLSLPreviewProps {
   code: string
@@ -223,7 +224,6 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
 
   return (
     <div className="flex flex-col h-full">
-
       {error && (
         <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2 font-mono text-sm whitespace-pre-wrap">
           {error}
@@ -264,6 +264,17 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
           </div>
         </Card>
       )}
+
+      <div className="border-t p-2 h-10 flex items-center bg-background">
+        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2">
+          <MdReplay className="h-2 w-2 mr-1" />
+          Refresh
+        </Button>
+        <Button size="sm" variant={showControls ? "default" : "outline"} onClick={toggleControls} className="ml-auto">
+          <SlidersIcon className="h-2 w-2 mr-1" />
+          Controls
+        </Button>
+      </div>
     </div>
   )
 }

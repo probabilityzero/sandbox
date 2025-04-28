@@ -5,6 +5,7 @@ import { Button } from "../../ui/button"
 import { PlayIcon, PauseIcon, RefreshCwIcon as RefreshIcon, TerminalIcon, LoaderIcon } from "lucide-react"
 import { Card } from "../../ui/card"
 import { Progress } from "../../ui/progress"
+import { MdPause, MdPlayArrow, MdReplay } from "react-icons/md"
 
 interface PythonPreviewProps {
   code: string
@@ -209,25 +210,10 @@ export function PythonPreview({ code }: PythonPreviewProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b p-2 flex items-center">
-        <Button size="sm" variant="outline" onClick={toggleRunning} className="mr-2" disabled={pyodideLoading}>
-          {isRunning ? <PauseIcon className="h-4 w-4" /> : <PlayIcon className="h-4 w-4" />}
-          {isRunning ? "Pause" : "Run"}
-        </Button>
-        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2" disabled={pyodideLoading}>
-          <RefreshIcon className="h-4 w-4 mr-1" />
-          Refresh
-        </Button>
-        <Button size="sm" variant={showConsole ? "default" : "outline"} onClick={toggleConsole} className="ml-auto">
-          <TerminalIcon className="h-4 w-4 mr-1" />
-          Console {consoleOutput.length > 0 && `(${consoleOutput.length})`}
-        </Button>
-      </div>
-
       {pyodideLoading && (
         <div className="bg-background p-4 flex flex-col items-center justify-center">
           <div className="flex items-center mb-2">
-            <LoaderIcon className="animate-spin h-5 w-5 mr-2" />
+            <LoaderIcon className="animate-spin h-4 w-4 mr-2" />
             <span>Loading Python Environment...</span>
           </div>
           <Progress value={loadingProgress} className="w-full max-w-md" />
@@ -276,6 +262,21 @@ export function PythonPreview({ code }: PythonPreviewProps) {
           </div>
         </Card>
       )}
+
+      <div className="border-t p-2  h-10 flex items-center bg-background">
+        <Button size="sm" variant="outline" onClick={toggleRunning} className="mr-2" disabled={pyodideLoading}>
+          {isRunning ? <MdPause className="h-2 w-2 mr-1" /> : <MdPlayArrow className="h-2 w-2 mr-1" />}
+          {isRunning ? "Pause" : "Run"}
+        </Button>
+        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2" disabled={pyodideLoading}>
+          <MdReplay className="h-2 w-2 mr-1" />
+          Refresh
+        </Button>
+        <Button size="sm" variant={showConsole ? "default" : "outline"} onClick={toggleConsole} className="ml-auto">
+          <TerminalIcon className="h-2 w-2 mr-1" />
+          {consoleOutput.length > 0 && `(${consoleOutput.length})`}
+        </Button>
+      </div>
     </div>
   )
 }
