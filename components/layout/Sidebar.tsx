@@ -170,31 +170,14 @@ export function Sidebar() {
         
         <div className="flex flex-col px-3 pt-1">
           {/* My Projects group */}
-          <button 
-            className="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
-            onClick={() => toggleSection('myProjects')}
-          >
-            <div className="flex items-center gap-2" onClick={(e) => {
-              e.stopPropagation();
-              handleNavClick(e as React.MouseEvent, "/dashboard");
-            }}>
-              <LucideFolderCode className="h-4 w-4" />
-              <span className="text-sm">My Projects</span>
-            </div>
-            {expandedSections.myProjects ? 
-              <ChevronDownIcon className="h-4 w-4" /> : 
-              <ChevronRightIcon className="h-4 w-4" />
-            }
-          </button>
-          
-          {expandedSections.myProjects && (
-            <div className="ml-9 mt-1 flex flex-col">
+            <div className="mt-1 flex flex-col px-3 py-1.5 rounded-md hover:bg-accent text-foreground">
               <a 
                 href="/dashboard" 
                 onClick={(e) => handleNavClick(e, "/dashboard")}
                 className="text-sm py-1.5 hover:text-primary"
               >
-                All Projects
+                <FolderIcon className="h-3.5 w-3.5" />
+                My Repository
               </a>
               <a 
                 href="/dashboard?saved=true" 
@@ -205,7 +188,6 @@ export function Sidebar() {
                 Saved Collections
               </a>
             </div>
-          )}
 
           {/* Discover group */}
           <button 
