@@ -17,22 +17,14 @@ import {
 export default function ContributePage() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container flex items-center justify-between h-14">
-          <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center">
-              <Image src="/cube-logo.svg" width={24} height={24} alt="Grid Sandbox Logo" />
-              <span className="font-medium ml-2">Sandbox</span>
-            </Link>
-            <span className="text-muted-foreground">/</span>
-            <span className="font-medium">Contribute</span>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" asChild>
-              <Link href="/dashboard">Dashboard</Link>
-            </Button>
-          </div>
+      <header className="border-b container flex sticky top-0 items-center justify-between h-14">
+        <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center">
+            <Image src="/cube-logo.svg" width={24} height={24} alt="Grid Sandbox Logo" />
+            <span className="font-medium ml-2">Sandbox</span>
+          </Link>
+          <span className="text-muted-foreground">/</span>
+          <span className="font-medium">Contribute</span>
         </div>
       </header>
       
