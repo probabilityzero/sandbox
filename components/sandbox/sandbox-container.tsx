@@ -1,9 +1,9 @@
 "use client"
 
 import { CodeEditor } from "./code-editor"
-import { JavaScriptPreview } from "./preview-engine/javascript-preview"
-import { PythonPreview } from "./preview-engine/python-preview"
-import { GLSLPreview } from "./preview-engine/glsl-preview"
+import { JavaScriptPreview } from "./preview-engine/p5Engine"
+import { PythonPreview } from "./preview-engine/PyEngine"
+import { GLSLPreview } from "./preview-engine/GLSLEngine"
 import { useProjects } from "@/hooks/use-projects"
 import { useSidebar } from "@/hooks/use-sidebar"
 import { Button } from "../ui/button"
@@ -29,7 +29,7 @@ import {
 } from "../ui/tooltip"
 import { SiJavascript, SiPython, SiWebgl } from "react-icons/si"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog"
-import { ProjectToolbar } from "./project-toolbar"
+import { ProjectToolbar } from "./SandboxToolbar"
 import { getDefaultSketch } from "@/lib/default-sketch"
 
 export function EditorContainer() {

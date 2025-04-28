@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { NewProjectButton } from "@/components/new-project-button"
+import { NewProjectButton } from "@/components/NewSandbox"
 import { RecentProjects } from "@/components/layout/SidebarRecentProjects"
 import {
   MenuIcon,

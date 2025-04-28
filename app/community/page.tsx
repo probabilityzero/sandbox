@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ChevronDownIcon, SearchIcon } from "lucide-react"
 import Link from "next/link"
 import { ProjectCard, ProjectCardProps } from "@/components/project-card"
-import { Header } from "@/components/layout/header"
+import { Header } from "@/components/layout/Heading"
 
 const communityProjects: ProjectCardProps[] = [
   {

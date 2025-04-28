@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CodeEditor } from "../code-editor"
-import { JavaScriptPreview } from "./preview-engine/javascript-preview"
-import { PythonPreview } from "./preview-engine/python-preview"
-import { GLSLPreview } from "./preview-engine/glsl-preview"
-import { ProjectSelector } from "../project-selector"
-import { LanguageSelector } from "../language-selector"
+import { CodeEditor } from "./CodeEditor"
+import { JavaScriptPreview } from "./preview-engine/p5Engine"
+import { PythonPreview } from "./preview-engine/PyEngine"
+import { GLSLPreview } from "./preview-engine/GLSLEngine"
+import { ProjectSelector } from "./HistoryDropdown"
+import { LanguageSelector } from "../LanguageSelect"
 import { db } from "@/lib/db"
 import type { LanguageType, Project } from "@/types/project"
 import { Button } from "../ui/button"
@@ -15,7 +15,7 @@ import { getDefaultSketch } from "@/lib/default-sketch"
 import { Input } from "../ui/input"
 import { CodeIcon } from "../ui/icons"
 import { SiJavascript, SiPython, SiWebgl } from "react-icons/si"
-import { ProjectToolbar } from "./project-toolbar"
+import { ProjectToolbar } from "./SandboxToolbar"
 
 export function EditorContainer() {
   const [code, setCode] = useState<string>("")

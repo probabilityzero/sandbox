@@ -1,7 +1,7 @@
 "use client"
 
 import type { Project } from "@/types/project"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 interface ProjectSelectorProps {
   projects: Project[]

@@ -4,9 +4,9 @@ import { useProjects } from "@/hooks/use-projects"
 import { CodeIcon, SearchIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useState, useEffect } from "react"
-import { NewProjectButton } from "@/components/new-project-button"
+import { NewProjectButton } from "@/components/NewSandbox"
 import { ProjectCard } from "@/components/project-card"
-import { Header } from "@/components/layout/header"
+import { Header } from "@/components/layout/Heading"
 
 export default function Dashboard() {
   const { projects, currentProject, changeProject } = useProjects()
