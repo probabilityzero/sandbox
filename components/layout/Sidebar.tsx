@@ -185,7 +185,7 @@ export function Sidebar() {
               </a>
               <a 
                 href="/collections" 
-                onClick={(e) => handleNavClick(e, "/dashboard?saved=true")}
+                onClick={(e) => handleNavClick(e, "/collections")}
                 className="text-sm py-1.5 hover:text-primary px-3 rounded-md flex items-center text-foreground gap-2"
               >
                 <SaveIcon className="h-3.5 w-3.5" />
