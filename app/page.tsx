@@ -22,14 +22,11 @@ export default function Home() {
           </div>
           
           <nav className="hidden md:flex gap-6">
-            <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Features
+            <Link href="/explore" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Explore
             </Link>
-            <Link href="#examples" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Examples
-            </Link>
-            <Link href="/community" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Community
+            <Link href="/learn" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Learn
             </Link>
           </nav>
           

@@ -25,7 +25,7 @@ import {
   Shapes
 } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useSidebar } from "@/hooks/use-sidebar"
 import { useProjects } from "@/hooks/use-projects"
 import Image from "next/image"
@@ -49,10 +49,21 @@ export function Sidebar() {
   const { isOpen, isMobile, toggle, close } = useSidebar()
   const { projects } = useProjects()
   const router = useRouter()
+  const pathname = usePathname()
   const [expandedSections, setExpandedSections] = useState({
     examples: false,
     tutorials: false
   })
+  
+  // Check if we're at the root path
+  const isRootPath = pathname === "/"
+  
+  // Close sidebar and prevent opening when at root path
+  useEffect(() => {
+    if (isRootPath && isOpen) {
+      close()
+    }
+  }, [isRootPath, isOpen, close])
   
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
@@ -92,6 +103,11 @@ export function Sidebar() {
         router.push(path)
       }, 10)
     }
+  }
+
+  // Don't render the sidebar on root path
+  if (isRootPath) {
+    return null
   }
 
   return (
@@ -246,7 +262,7 @@ export function Sidebar() {
         </div>
       </div>
       
-      {!isMobile && (
+      {!isMobile && !isRootPath && (
         <Button
           variant="ghost"
           size="icon"
@@ -261,7 +277,7 @@ export function Sidebar() {
         </Button>
       )}
       
-      {isMobile && !isOpen && (
+      {isMobile && !isOpen && !isRootPath && (
         <Button
           variant="ghost"
           size="icon"
