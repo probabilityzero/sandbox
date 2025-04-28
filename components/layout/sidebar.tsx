@@ -120,19 +120,31 @@ export function Sidebar() {
         )}
       >
         <div className="flex items-center justify-between p-3">
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 flex items-center justify-center">
-              <Image 
-                src="/cube-logo.svg" 
-                width={24} 
-                height={24} 
-                alt="Grid Sandbox Logo" 
-              />
+            <div className="flex items-center gap-2">
+              <div className="h-7 w-7 flex items-center justify-center">
+                <Image 
+                  src="/cube-logo.svg" 
+                  width={24} 
+                  height={24} 
+                  alt="Grid Sandbox Logo" 
+                />
+              </div>
+              <span className="font-medium text-foreground/50">/</span>
+              <div className="flex items-center gap-2 group hover:bg-accent px-2 py-1 rounded-lg transition-colors">
+                <Image
+                  src="https://avatars.githubusercontent.com/u/160033214?s=400&u=6d26a45a087691c64591bd56bb6c3fe24b2b0fc9&v=4"
+                  width={20}
+                  height={20}
+                  alt="User avatar"
+                  className="rounded-full transition-transform group-hover:scale-110"
+                />
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                  probabilityzero
+                </span>
+              </div>
             </div>
-            <span className="font-medium text-foreground">Grid Sandbox</span>
           </div>
-        </div>
-        
+
         <div className="px-3 py-2">
           <NewProjectButton 
             fullWidth 

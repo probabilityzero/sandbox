@@ -1,9 +1,9 @@
 "use client"
 
 import { CodeEditor } from "./code-editor"
-import { JavaScriptPreview } from "./engine/javascript-preview"
-import { PythonPreview } from "./engine/python-preview"
-import { GLSLPreview } from "./engine/glsl-preview"
+import { JavaScriptPreview } from "./preview-engine/javascript-preview"
+import { PythonPreview } from "./preview-engine/python-preview"
+import { GLSLPreview } from "./preview-engine/glsl-preview"
 import { useProjects } from "@/hooks/use-projects"
 import { useSidebar } from "@/hooks/use-sidebar"
 import { Button } from "../ui/button"
