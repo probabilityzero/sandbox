@@ -263,7 +263,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           
           // Redirect to the next project
           if (typeof window !== "undefined") {
-            window.history.pushState({}, '', `/project/${nextProject.id}`)
+            window.history.pushState({}, '', `/sandbox/${nextProject.id}`)
           }
         } else {
           setCurrentProject(null)

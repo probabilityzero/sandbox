@@ -140,8 +140,8 @@ export function ProjectCard({
   )
   
   const linkHref = isCommunity 
-    ? `/community/project/${id}` 
-    : `/project/${id}`
+    ? `/community/sandbox/${id}` 
+    : `/sandbox/${id}`
   
   return (
     <div className="group overflow-hidden transition-colors">

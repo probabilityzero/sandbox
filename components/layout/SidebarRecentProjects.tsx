@@ -40,7 +40,7 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
     
     setTimeout(() => {
       if (projectId !== undefined) {
-        router.push(`/project/${projectId}`)
+        router.push(`/sandbox/${projectId}`)
       }
     }, 10)
   }
@@ -64,7 +64,7 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
             recentProjects.map((project) => (
               <a
                 key={project.id}
-                href={`/project/${project.id}`}
+                href={`/sandbox/${project.id}`}
                 className="flex items-center gap-2 px-5 py-1.5 text-sm text-foreground hover:bg-accent"
               >
                 {project.language === "javascript" && <span className="text-yellow-400 text-xs">JS</span>}

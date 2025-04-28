@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ChevronDownIcon, SearchIcon } from "lucide-react"
 import Link from "next/link"
-import { ProjectCard, ProjectCardProps } from "@/components/project-card"
-import { Header } from "@/components/layout/Heading"
+import { ProjectCard, ProjectCardProps } from "@/components/SandboxCards"
+import { Header } from "@/components/layout/Header"
 
 const communityProjects: ProjectCardProps[] = [
   {

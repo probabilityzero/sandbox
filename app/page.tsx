@@ -1,13 +1,13 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { ChevronRightIcon, CodeIcon, BrushIcon, ArrowRightIcon } from "lucide-react"
+import { ChevronRightIcon, CodeIcon, BrushIcon, ArrowRightIcon, ShapesIcon } from "lucide-react"
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero section */}
-      <header className="w-full border-b sticky top-0 z-40 bg-background">
+      <header className="w-full border-b sticky top-0 z-50 bg-background">
         <div className="container flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 flex items-center justify-center">
@@ -18,7 +18,7 @@ export default function Home() {
                 alt="Grid Sandbox Logo" 
               />
             </div>
-            <span className="font-medium text-foreground">Grid Sandbox</span>
+            <span className="font-medium text-foreground">Sandbox</span>
           </div>
           
           <nav className="hidden md:flex gap-6">
@@ -69,15 +69,15 @@ export default function Home() {
             
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button size="lg" className="gap-2" asChild>
-                <Link href="/dashboard">
+                <Link href="/sandbox/new">
+                  <CodeIcon className="h-4 w-4" />
                   Start Coding
-                  <ArrowRightIcon className="h-4 w-4" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" className="gap-2" asChild>
                 <Link href="/community">
+                <ShapesIcon className="h-4 w-4" />
                   Explore Examples
-                  <CodeIcon className="h-4 w-4" />
                 </Link>
               </Button>
             </div>

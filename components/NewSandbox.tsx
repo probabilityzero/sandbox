@@ -8,6 +8,7 @@ import type { LanguageType } from "@/types/project"
 import { SiJavascript, SiPython, SiWebgl } from "react-icons/si"
 import { IconType } from "react-icons"
 import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
 type LanguageOption = {
   value: LanguageType
@@ -48,9 +49,11 @@ interface NewProjectButtonProps {
 
 export function NewProjectButton({ fullWidth = false, className }: NewProjectButtonProps) {
   const { createNewProject } = useProjects()
+  const router = useRouter()
   
   const handleCreateProject = (language: LanguageType) => {
     createNewProject(language)
+    router.push(`/sandbox/new?language=${language}`)
   }
   
   return (

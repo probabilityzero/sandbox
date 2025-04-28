@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Header } from "@/components/layout/Heading"
+import { Header } from "@/components/layout/Header"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SearchIcon, PlusIcon, ArrowLeftIcon } from "lucide-react"
-import { ProjectCard, ProjectCardProps } from "@/components/project-card"
+import { ProjectCard, ProjectCardProps } from "@/components/SandboxCards"
 import Link from "next/link"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
