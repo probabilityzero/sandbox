@@ -35,6 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { MdOutlineDashboard } from "react-icons/md"
 
 export function Sidebar() {
   const { isOpen, isMobile, toggle, close } = useSidebar()
@@ -166,7 +167,7 @@ export function Sidebar() {
                 onClick={(e) => handleNavClick(e, "/dashboard")}
                 className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground flex items-center gap-2"
               >
-                <LucideFolderCode className="h-3.5 w-3.5" />
+                <MdOutlineDashboard className="h-3.5 w-3.5" />
                 <span>Dashboard</span>
               </a>
               <a 
@@ -195,13 +196,21 @@ export function Sidebar() {
           
             {expandedSections.discover && (
               <div className="flex flex-col">
+              <a 
+                href="/explore" 
+                onClick={(e) => handleNavClick(e, "/explore")}
+                className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground flex items-center gap-2"
+              >
+                <CompassIcon className="h-3.5 w-3.5" />
+                <span>Explore</span>
+              </a>
                 <a 
-                  href="/explore" 
-                  onClick={(e) => handleNavClick(e, "/explore")}
+                  href="/browse"
+                  onClick={(e) => handleNavClick(e, "/browse")} 
                   className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground flex items-center gap-2"
                 >
                   <CompassIcon className="h-3.5 w-3.5" />
-                  <span>Explore</span>
+                  <span>Games</span>
                 </a>
                 <a 
                   href="/learn" 
