@@ -28,6 +28,9 @@ export default function Home() {
             <Link href="/learn" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Learn
             </Link>
+            <Link href="/contribute" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Contribute
+            </Link>
           </nav>
           
           <div className="flex gap-3">
