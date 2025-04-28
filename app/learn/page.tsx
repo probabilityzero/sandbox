@@ -9,7 +9,7 @@ export default function LearnPage() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
-        <div className="container flex items-center justify-between h-14">
+        <div className="container flex sticky top-0 items-center justify-between h-14">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center">
               <Image src="/cube-logo.svg" width={24} height={24} alt="Grid Sandbox Logo" />

@@ -6,8 +6,8 @@ import { ChevronRightIcon, CodeIcon, BrushIcon, ArrowRightIcon, ShapesIcon } fro
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="border-b container flex sticky top-0 items-center justify-between h-14">
-      
+    <header className="border-b bg-background">
+      <div className="container flex sticky top-0 items-center justify-between h-14">
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 flex items-center justify-center">
               <Image 
@@ -40,6 +40,7 @@ export default function Home() {
               <Link href="/auth?signup">Get Started</Link>
             </Button>
           </div>
+        </div>
       </header>
       
       <main className="flex-grow">
