@@ -140,7 +140,7 @@ export function ProjectCard({
   )
   
   const linkHref = isCommunity 
-    ? `/community/sandbox/${id}` 
+    ? `/explore/sandbox/${id}` 
     : `/sandbox/${id}`
   
   return (

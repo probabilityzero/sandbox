@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "@/styles/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Sidebar } from "@/components/layout/Sidebar"
+import { Sidebar } from "@/components/Sidebar"
 import { ProjectProvider } from "@/hooks/use-projects"
 import { SidebarProvider } from "@/hooks/use-sidebar"
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Grid Sandbox - Creative Coding Platform",
   description: "A browser-based creative coding platform for experimenting with JavaScript, Python, and shader programming",
   keywords: ["creative coding", "editor", "p5.js", "javascript", "python", "glsl", "sandbox"],
-  authors: [{ name: "Grid Sandbox Team" }],
+  authors: [{ name: "Grid" }],
   icons: {
     icon: "/cube-logo.svg",
     apple: "/cube-logo.svg",

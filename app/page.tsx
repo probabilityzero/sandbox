@@ -75,7 +75,7 @@ export default function Home() {
                 </Link>
               </Button>
               <Button variant="outline" size="lg" className="gap-2" asChild>
-                <Link href="/community">
+                <Link href="/explore">
                 <ShapesIcon className="h-4 w-4" />
                   Explore Examples
                 </Link>
@@ -151,7 +151,7 @@ export default function Home() {
             
             <div className="text-center mt-10">
               <Button asChild>
-                <Link href="/community">
+                <Link href="/explore">
                   View All Examples
                   <ArrowRightIcon className="ml-2 h-4 w-4" />
                 </Link>
