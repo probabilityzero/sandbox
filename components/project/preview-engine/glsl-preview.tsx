@@ -2,12 +2,11 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Button } from "../../ui/button"
-import { RefreshCwIcon as RefreshIcon, SlidersIcon } from "lucide-react"
+import { RefreshCwIcon as RefreshIcon, SlidersIcon, ChevronDownIcon } from "lucide-react"
 import { Card } from "../../ui/card"
 import { Slider } from "../../ui/slider"
 import { Label } from "../../ui/label"
 import { Switch } from "../../ui/switch"
-import { MdReplay } from "react-icons/md"
 
 interface GLSLPreviewProps {
   code: string
@@ -235,7 +234,16 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
       </div>
 
       {showControls && (
-        <Card className="h-1/3 overflow-auto p-4 m-2">
+        <Card className="relative h-1/3 overflow-auto p-4 m-2">
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            onClick={toggleControls} 
+            className="absolute right-2 top-2 h-6 w-6 p-0"
+          >
+            <ChevronDownIcon className="h-4 w-4" />
+          </Button>
+          
           <h3 className="text-lg font-medium mb-4">Shader Controls</h3>
 
           <div className="space-y-6">
@@ -265,13 +273,13 @@ export function GLSLPreview({ code }: GLSLPreviewProps) {
         </Card>
       )}
 
-      <div className="border-t p-2 h-10 flex items-center bg-background">
+      <div className="border-t p-2 flex items-center bg-background">
         <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2">
-          <MdReplay className="h-2 w-2 mr-1" />
+          <RefreshIcon className="h-3 w-3 mr-1" />
           Refresh
         </Button>
         <Button size="sm" variant={showControls ? "default" : "outline"} onClick={toggleControls} className="ml-auto">
-          <SlidersIcon className="h-2 w-2 mr-1" />
+          <SlidersIcon className="h-3 w-3 mr-1" />
           Controls
         </Button>
       </div>
