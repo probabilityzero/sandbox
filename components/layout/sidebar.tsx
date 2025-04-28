@@ -195,7 +195,7 @@ export function Sidebar() {
           >
             <div className="flex items-center gap-2">
               <BrushIcon className="h-4 w-4" />
-              <span className="text-sm">Examples</span>
+              <span className="text-sm">Saved Collections</span>
             </div>
             {expandedSections.examples ? 
               <ChevronDownIcon className="h-4 w-4" /> : 
@@ -209,7 +209,7 @@ export function Sidebar() {
           >
             <div className="flex items-center gap-2">
               <BookOpenIcon className="h-4 w-4" />
-              <span className="text-sm">Tutorials</span>
+              <span className="text-sm">Learn</span>
             </div>
             {expandedSections.tutorials ? 
               <ChevronDownIcon className="h-4 w-4" /> : 
