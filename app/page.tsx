@@ -6,7 +6,6 @@ import { ChevronRightIcon, CodeIcon, BrushIcon, ArrowRightIcon, ShapesIcon } fro
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero section */}
       <header className="w-full border-b sticky top-0 z-50 bg-background">
         <div className="container flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
@@ -35,18 +34,16 @@ export default function Home() {
           
           <div className="flex gap-3">
             <Button variant="ghost" asChild>
-              <Link href="/dashboard">Log in</Link>
+              <Link href="/auth?login">Dashboard</Link>
             </Button>
             <Button asChild className="py-2 px-4">
-              <Link href="/dashboard">Get Started</Link>
+              <Link href="/auth?signup">Get Started</Link>
             </Button>
           </div>
         </div>
       </header>
       
-      {/* Main section */}
       <main className="flex-grow">
-        {/* Hero section */}
         <section className="py-20 md:py-32 relative overflow-hidden">
           <div className="container flex flex-col items-center text-center space-y-6 relative z-10">
             <div className="flex gap-2 py-2 px-4 bg-muted rounded-full">
@@ -82,11 +79,9 @@ export default function Home() {
             </div>
           </div>
           
-          {/* Background pattern */}
           <div className="absolute inset-0 bg-grid-pattern opacity-[0.025]"></div>
         </section>
         
-        {/* Features */}
         <section id="features" className="py-20 bg-muted/30">
           <div className="container">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Features that empower your creativity</h2>
@@ -127,7 +122,6 @@ export default function Home() {
           </div>
         </section>
         
-        {/* Examples showcase */}
         <section id="examples" className="py-20">
           <div className="container">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Inspiring examples</h2>
@@ -136,7 +130,6 @@ export default function Home() {
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Example cards would go here - simplified for brevity */}
               {[1, 2, 3].map(i => (
                 <div key={i} className="rounded-lg overflow-hidden border bg-card">
                   <div className="h-48 bg-muted"></div>
@@ -159,7 +152,6 @@ export default function Home() {
           </div>
         </section>
         
-        {/* CTA */}
         <section className="py-20 bg-muted">
           <div className="container text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to start creating?</h2>
@@ -173,7 +165,6 @@ export default function Home() {
         </section>
       </main>
       
-      {/* Footer */}
       <footer className="border-t py-10">
         <div className="container flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center gap-2 mb-4 md:mb-0">

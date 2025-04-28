@@ -55,10 +55,8 @@ export function Sidebar() {
     tutorials: false
   })
   
-  // Check if we're at the root path
-  const isRootPath = pathname === "/"
+  const isRootPath = ['/', '/contribute', '/legal'].includes(pathname)
   
-  // Close sidebar and prevent opening when at root path
   useEffect(() => {
     if (isRootPath && isOpen) {
       close()
