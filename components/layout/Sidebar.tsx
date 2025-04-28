@@ -10,34 +10,22 @@ import {
   MenuIcon,
   PanelLeftCloseIcon,
   PanelLeftIcon,
-  FolderIcon,
-  UsersIcon,
-  BookOpenIcon,
   ChevronRightIcon,
   ChevronDownIcon,
-  BrushIcon,
   SettingsIcon,
   UserIcon,
   LifeBuoyIcon,
   LogOutIcon,
-  MenuSquareIcon,
   LucideFolderCode,
-  Shapes,
   BookOpen,
-  SaveIcon,
-  CompassIcon
+  CompassIcon,
+  Bookmark
 } from "lucide-react"
-import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { useSidebar } from "@/hooks/use-sidebar"
 import { useProjects } from "@/hooks/use-projects"
 import Image from "next/image"
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from "@/components/ui/popover"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -188,16 +176,16 @@ export function Sidebar() {
                 onClick={(e) => handleNavClick(e, "/collections")}
                 className="text-sm py-1.5 hover:text-primary px-3 rounded-md flex items-center text-foreground gap-2"
               >
-                <SaveIcon className="h-3.5 w-3.5" />
+                <Bookmark className="h-3.5 w-3.5" />
                 <span>My Collections</span>
               </a>
             </div>
           </div>
 
           {/* Discover group */}
-          <div className="mt-1">
+          <div className="mt-2">
             <button 
-            className="flex items-center justify-between pl-5 pr-6 py-1.5 w-full text-left text-muted-foreground hover:text-foreground"
+            className="flex items-center justify-between pl-2 pr-3 py-1.5 w-full text-left text-muted-foreground hover:text-foreground"
             onClick={() => toggleSection('discover')}
           >
             <span className="text-xs">Discover</span>
@@ -208,7 +196,7 @@ export function Sidebar() {
           </button>
           
             {expandedSections.discover && (
-              <div className="mt-1 flex flex-col">
+              <div className="flex flex-col">
                 <a 
                   href="/explore" 
                   onClick={(e) => handleNavClick(e, "/explore")}
