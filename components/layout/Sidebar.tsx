@@ -55,7 +55,7 @@ export function Sidebar() {
     tutorials: false
   })
   
-  const isRootPath = ['/', '/contribute', '/legal'].includes(pathname)
+  const isRootPath = ['/', '/contribute', '/learn', '/legal/terms', '/legal/privacy', '/legal/cookies'].includes(pathname)
   
   useEffect(() => {
     if (isRootPath && isOpen) {

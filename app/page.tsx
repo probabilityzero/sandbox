@@ -36,7 +36,7 @@ export default function Home() {
             <Button variant="ghost" asChild>
               <Link href="/auth?login">Dashboard</Link>
             </Button>
-            <Button asChild className="py-2 px-4">
+            <Button asChild className="py-1 my-1 px-4">
               <Link href="/auth?signup">Get Started</Link>
             </Button>
           </div>
@@ -180,13 +180,14 @@ export default function Home() {
           </div>
           
           <div className="flex gap-6">
-            <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link href="about" className="text-sm text-muted-foreground hover:text-foreground">
               About
             </Link>
-            <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/legal/terms" className="text-sm text-muted-foreground hover:text-foreground">
               Terms
             </Link>
-            <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
+            <span className="text-sm text-muted-foreground">&</span>
+            <Link href="/legal/privacy" className="text-sm text-muted-foreground hover:text-foreground">
               Privacy
             </Link>
           </div>
