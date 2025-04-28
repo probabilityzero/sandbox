@@ -170,11 +170,11 @@ export function Sidebar() {
         
         <div className="flex flex-col px-3 pt-1">
           {/* My Projects group */}
-            <div className="mt-1 flex flex-col px-3 py-1.5 rounded-md hover:bg-accent text-foreground">
+            <div className="mt-1 flex flex-col">
               <a 
                 href="/dashboard" 
                 onClick={(e) => handleNavClick(e, "/dashboard")}
-                className="text-sm py-1.5 hover:text-primary"
+                className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground"
               >
                 <FolderIcon className="h-3.5 w-3.5" />
                 My Repository
@@ -182,7 +182,7 @@ export function Sidebar() {
               <a 
                 href="/dashboard?saved=true" 
                 onClick={(e) => handleNavClick(e, "/dashboard?saved=true")}
-                className="text-sm py-1.5 hover:text-primary flex items-center gap-2"
+                className="text-sm py-1.5 hover:text-primary px-3 rounded-md flex items-center text-foreground gap-2"
               >
                 <SaveIcon className="h-3.5 w-3.5" />
                 Saved Collections

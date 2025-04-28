@@ -48,7 +48,7 @@ export function SiteHeader({
                 alt="Grid Sandbox Logo" 
               />
             </div>
-            <span className="font-medium ml-2">Sandbox</span>
+            <span className="font-medium ml-2 hidden md:block">Sandbox</span>
           </Link>
 
           {showBreadcrumb && (
