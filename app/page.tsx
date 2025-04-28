@@ -37,7 +37,7 @@ export default function Home() {
             <Button variant="ghost" asChild>
               <Link href="/dashboard">Log in</Link>
             </Button>
-            <Button asChild>
+            <Button asChild className="py-2 px-4">
               <Link href="/dashboard">Get Started</Link>
             </Button>
           </div>
@@ -66,19 +66,18 @@ export default function Home() {
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl">
               A lightweight creative coding environment for JavaScript, Python, and GLSL shader programming.
             </p>
-            
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button size="lg" className="gap-2" asChild>
-                <Link href="/sandbox/new">
-                  <CodeIcon className="h-4 w-4" />
-                  Start Coding
-                </Link>
+              <Button size="lg" className="gap-2 text-lg" asChild>
+              <Link href="/sandbox/new">
+                <CodeIcon className="h-4 w-4" />
+                Start Coding
+              </Link>
               </Button>
-              <Button variant="outline" size="lg" className="gap-2" asChild>
-                <Link href="/explore">
-                <ShapesIcon className="h-4 w-4" />
-                  Explore Examples
-                </Link>
+              <Button variant="outline" size="lg" className="gap-2 text-lg" asChild>
+              <Link href="/explore">
+              <ShapesIcon className="h-4 w-4" />
+                Explore Examples
+              </Link>
               </Button>
             </div>
           </div>
