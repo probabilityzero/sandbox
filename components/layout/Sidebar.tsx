@@ -42,8 +42,7 @@ export function Sidebar() {
   const router = useRouter()
   const pathname = usePathname()
   const [expandedSections, setExpandedSections] = useState({
-    myProjects: false,
-    discover: false,
+    discover: true,
     recents: true
   })
   
@@ -95,7 +94,6 @@ export function Sidebar() {
     }
   }
 
-  // Don't render the sidebar on root path
   if (isRootPath) {
     return null
   }
@@ -177,7 +175,7 @@ export function Sidebar() {
                 className="text-sm py-1.5 hover:text-primary px-3 rounded-md flex items-center text-foreground gap-2"
               >
                 <Bookmark className="h-3.5 w-3.5" />
-                <span>My Collections</span>
+                <span>Collections</span>
               </a>
             </div>
           </div>
