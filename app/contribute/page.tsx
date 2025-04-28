@@ -13,18 +13,19 @@ import {
   UsersIcon,
   EyeIcon
 } from "lucide-react"
-import { SiteHeader } from "@/components/layout/site-header"
+import { SiteHeader } from "@/components/layout/SiteHeader"
+import { SiteFooter } from "@/components/layout/SiteFooter"
 
 export default function ContributePage() {
   return (
-    <div className="min-h-screen bg-background">   
+    <div className="min-h-screen flex flex-col">   
       <SiteHeader 
         showDashboard={true} 
         showBreadcrumb={true} 
         breadcrumbText="Contribute" 
       />
       
-      <main className="container py-8">
+      <main className="container py-8 flex-grow">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">Contribute to Grid Sandbox</h1>
@@ -282,6 +283,8 @@ export default function ContributePage() {
           </section>
         </div>
       </main>
+      
+      <SiteFooter />
     </div>
   )
 }

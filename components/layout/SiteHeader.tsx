@@ -81,9 +81,9 @@ export function SiteHeader({
           ) : (
             <>
               <Button variant="ghost" asChild>
-                <Link href="/auth?login">Sign In</Link>
+                <Link href="/auth?login">Dashboard</Link>
               </Button>
-              <Button asChild className="py-1 my-1 px-4">
+              <Button asChild className="px-4">
                 <Link href="/auth?signup">Get Started</Link>
               </Button>
             </>

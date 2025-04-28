@@ -22,7 +22,9 @@ import {
   LogOutIcon,
   MenuSquareIcon,
   LucideFolderCode,
-  Shapes
+  Shapes,
+  BookOpen,
+  SaveIcon
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
@@ -51,8 +53,8 @@ export function Sidebar() {
   const router = useRouter()
   const pathname = usePathname()
   const [expandedSections, setExpandedSections] = useState({
-    examples: false,
-    tutorials: false
+    myProjects: false,
+    discover: false
   })
   
   const isRootPath = ['/', '/contribute', '/learn', '/legal/terms', '/legal/privacy', '/legal/cookies', '/auth'].includes(pathname)
@@ -167,53 +169,77 @@ export function Sidebar() {
         </div>
         
         <div className="flex flex-col px-3 pt-1">
-          <a 
-            href="/dashboard" 
-            onClick={(e) => handleNavClick(e, "/dashboard")}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
-          >
-            <LucideFolderCode className="h-4 w-4" />
-            <span className="text-sm">My Projects</span>
-          </a>
-          
-          <a
-            href="/explore" 
-            onClick={(e) => handleNavClick(e, "/explore")}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
-          >
-            <Shapes className="h-4 w-4" />
-            <span className="text-sm">Explore</span>
-          </a>
-        </div>
-
-        <div className="flex flex-col px-3 py-2">
+          {/* My Projects group */}
           <button 
             className="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent text-foreground"
-            onClick={() => toggleSection('examples')}
+            onClick={() => toggleSection('myProjects')}
           >
-            <div className="flex items-center gap-2">
-              <BrushIcon className="h-4 w-4" />
-              <span className="text-sm">Saved Collections</span>
+            <div className="flex items-center gap-2" onClick={(e) => {
+              e.stopPropagation();
+              handleNavClick(e as React.MouseEvent, "/dashboard");
+            }}>
+              <LucideFolderCode className="h-4 w-4" />
+              <span className="text-sm">My Projects</span>
             </div>
-            {expandedSections.examples ? 
+            {expandedSections.myProjects ? 
               <ChevronDownIcon className="h-4 w-4" /> : 
               <ChevronRightIcon className="h-4 w-4" />
             }
           </button>
           
+          {expandedSections.myProjects && (
+            <div className="ml-9 mt-1 flex flex-col">
+              <a 
+                href="/dashboard" 
+                onClick={(e) => handleNavClick(e, "/dashboard")}
+                className="text-sm py-1.5 hover:text-primary"
+              >
+                All Projects
+              </a>
+              <a 
+                href="/dashboard?saved=true" 
+                onClick={(e) => handleNavClick(e, "/dashboard?saved=true")}
+                className="text-sm py-1.5 hover:text-primary flex items-center gap-2"
+              >
+                <SaveIcon className="h-3.5 w-3.5" />
+                Saved Collections
+              </a>
+            </div>
+          )}
+
+          {/* Discover group */}
           <button 
-            className="flex items-center justify-between px-3 py-1.5 group-hover:text-foreground rounded-md hover:bg-accent text-foreground"
-            onClick={() => toggleSection('tutorials')}
+            className="flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent text-foreground mt-1"
+            onClick={() => toggleSection('discover')}
           >
             <div className="flex items-center gap-2">
-              <BookOpenIcon className="h-4 w-4" />
-              <span className="text-sm">Learn</span>
+              <Shapes className="h-4 w-4" />
+              <span className="text-sm">Discover</span>
             </div>
-            {expandedSections.tutorials ? 
+            {expandedSections.discover ? 
               <ChevronDownIcon className="h-4 w-4" /> : 
               <ChevronRightIcon className="h-4 w-4" />
             }
           </button>
+          
+          {expandedSections.discover && (
+            <div className="ml-9 mt-1 flex flex-col">
+              <a 
+                href="/explore" 
+                onClick={(e) => handleNavClick(e, "/explore")}
+                className="text-sm py-1.5 hover:text-primary"
+              >
+                Explore
+              </a>
+              <a 
+                href="/learn" 
+                onClick={(e) => handleNavClick(e, "/learn")}
+                className="text-sm py-1.5 hover:text-primary"
+              >
+                Learn
+              </a>
+            </div>
+          )}
         </div>
         
         <div className="flex-1 overflow-auto mt-2">

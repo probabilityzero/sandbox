@@ -4,18 +4,19 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowRightIcon, BookOpenIcon, GraduationCapIcon, PlayIcon, CodeIcon } from "lucide-react"
-import { SiteHeader } from "@/components/layout/site-header"
+import { SiteHeader } from "@/components/layout/SiteHeader"
+import { SiteFooter } from "@/components/layout/SiteFooter"
 
 export default function LearnPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col">
       <SiteHeader 
         showDashboard={true} 
         showBreadcrumb={true} 
         breadcrumbText="Learn" 
       />
       
-      <main className="container py-8">
+      <main className="container py-8 flex-grow">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">Learning Resources</h1>
@@ -271,6 +272,8 @@ export default function LearnPage() {
           </section>
         </div>
       </main>
+      
+      <SiteFooter />
     </div>
   )
 }

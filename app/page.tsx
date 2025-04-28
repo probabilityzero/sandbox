@@ -2,7 +2,8 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronRightIcon, CodeIcon, BrushIcon, ArrowRightIcon, ShapesIcon } from "lucide-react"
-import { SiteHeader } from "@/components/layout/site-header"
+import { SiteHeader } from "@/components/layout/SiteHeader"
+import { SiteFooter } from "@/components/layout/SiteFooter"
 
 export default function Home() {
   return (
@@ -131,34 +132,7 @@ export default function Home() {
         </section>
       </main>
       
-      <footer className="border-t py-10">
-        <div className="container flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <div className="h-7 w-7 flex items-center justify-center">
-              <Image 
-                src="/cube-logo.svg" 
-                width={20} 
-                height={20} 
-                alt="Grid Sandbox Logo" 
-              />
-            </div>
-            <span className="font-medium">Grid Sandbox</span>
-          </div>
-          
-          <div className="flex gap-6">
-            <Link href="about" className="text-sm text-muted-foreground hover:text-foreground">
-              About
-            </Link>
-            <Link href="/legal/terms" className="text-sm text-muted-foreground hover:text-foreground">
-              Terms
-            </Link>
-            <span className="text-sm text-muted-foreground">&</span>
-            <Link href="/legal/privacy" className="text-sm text-muted-foreground hover:text-foreground">
-              Privacy
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }
