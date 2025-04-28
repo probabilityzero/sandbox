@@ -24,7 +24,8 @@ import {
   LucideFolderCode,
   Shapes,
   BookOpen,
-  SaveIcon
+  SaveIcon,
+  CompassIcon
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
@@ -204,24 +205,24 @@ export function Sidebar() {
             }
           </button>
           
-          {expandedSections.discover && (
-            <div className="ml-9 mt-1 flex flex-col">
+            <div className="ml-8 mt-1 flex flex-col">
               <a 
                 href="/explore" 
                 onClick={(e) => handleNavClick(e, "/explore")}
-                className="text-sm py-1.5 hover:text-primary"
+                className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground"
               >
+                <CompassIcon className="h-3.5 w-3.5" />
                 Explore
               </a>
               <a 
                 href="/learn" 
                 onClick={(e) => handleNavClick(e, "/learn")}
-                className="text-sm py-1.5 hover:text-primary"
+                className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground"
               >
+                <BookOpen className="h-3.5 w-3.5" />
                 Learn
               </a>
             </div>
-          )}
         </div>
         
         <div className="flex-1 overflow-auto mt-2">
