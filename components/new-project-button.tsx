@@ -63,7 +63,7 @@ export function NewProjectButton({ fullWidth = false, className }: NewProjectBut
             className
           )}
         >
-          New Project
+          New Sandbox
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align={fullWidth ? "center" : "start"} className="w-56">

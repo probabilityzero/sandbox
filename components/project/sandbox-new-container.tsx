@@ -1,17 +1,21 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CodeEditor } from "./code-editor"
-import { JavaScriptPreview } from "./javascript-preview"
-import { PythonPreview } from "./python-preview"
-import { GLSLPreview } from "./glsl-preview"
-import { ProjectSelector } from "./project-selector"
-import { LanguageSelector } from "./language-selector"
+import { CodeEditor } from "../code-editor"
+import { JavaScriptPreview } from "./preview-engine/javascript-preview"
+import { PythonPreview } from "./preview-engine/python-preview"
+import { GLSLPreview } from "./preview-engine/glsl-preview"
+import { ProjectSelector } from "../project-selector"
+import { LanguageSelector } from "../language-selector"
 import { db } from "@/lib/db"
 import type { LanguageType, Project } from "@/types/project"
-import { Button } from "../components/ui/button"
+import { Button } from "../ui/button"
 import { PlusIcon, SaveIcon } from "lucide-react"
 import { getDefaultSketch } from "@/lib/default-sketch"
+import { Input } from "../ui/input"
+import { CodeIcon } from "../ui/icons"
+import { SiJavascript, SiPython, SiWebgl } from "react-icons/si"
+import { ProjectToolbar } from "./project-toolbar"
 
 export function EditorContainer() {
   const [code, setCode] = useState<string>("")
@@ -20,18 +24,16 @@ export function EditorContainer() {
   const [error, setError] = useState<string | null>(null)
   const [language, setLanguage] = useState<LanguageType>("javascript")
 
-  // Load projects on mount
   useEffect(() => {
     const loadProjects = async () => {
       try {
         const allProjects = await db.projects.toArray()
         setProjects(allProjects)
 
-        // Load the last project or create a default one if none exists
         if (allProjects.length > 0) {
           const lastProject = allProjects[allProjects.length - 1]
           setCurrentProject(lastProject)
-          setCode(lastProject.code)
+          setCode(lastProject.code || "")
           setLanguage(lastProject.language || "javascript")
         } else {
           createNewProject("javascript")
@@ -69,8 +71,8 @@ export function EditorContainer() {
         name: `${selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1)} Sketch ${projects.length + 1}`,
         code: defaultCode,
         language: selectedLanguage,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         versions: [],
       }
 
@@ -89,25 +91,22 @@ export function EditorContainer() {
     if (!currentProject) return
 
     try {
-      // Create a new version
       const newVersion = {
         code: currentProject.code,
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
       }
 
-      // Update the project
-      const updatedProject = {
+      const updatedProject: Project = {
         ...currentProject,
         code,
         language,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
         versions: [...(currentProject.versions || []), newVersion],
       }
 
       await db.projects.update(currentProject.id, updatedProject)
       setCurrentProject(updatedProject)
 
-      // Update projects list
       setProjects(projects.map((p) => (p.id === updatedProject.id ? updatedProject : p)))
 
       return updatedProject
@@ -120,16 +119,14 @@ export function EditorContainer() {
 
   const handleProjectChange = async (projectId: number) => {
     try {
-      // Save current project first
       if (currentProject) {
         await saveProject()
       }
 
-      // Load selected project
       const selectedProject = await db.projects.get(projectId)
       if (selectedProject) {
         setCurrentProject(selectedProject)
-        setCode(selectedProject.code)
+        setCode(selectedProject.code || "")
         setLanguage(selectedProject.language || "javascript")
       }
     } catch (err) {
@@ -147,12 +144,10 @@ export function EditorContainer() {
     if (language === newLanguage) return
 
     try {
-      // Save current project first
       if (currentProject) {
         await saveProject()
       }
 
-      // Create a new project with the selected language
       await createNewProject(newLanguage)
     } catch (err) {
       console.error("Failed to change language:", err)
@@ -174,33 +169,43 @@ export function EditorContainer() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
-      <div className="border-b p-2 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <ProjectSelector projects={projects} currentProject={currentProject} onProjectChange={handleProjectChange} />
-          <Button size="sm" variant="outline" onClick={() => createNewProject()}>
-            <PlusIcon className="h-4 w-4 mr-1" />
-            New
-          </Button>
+    <div className="flex flex-col h-screen">
+      <div className="mt-12 mx-1 md:mx-2 rounded-t-lg border flex flex-col h-[calc(100dvh-3rem)]">
+        <div className="p-1 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <LanguageSelector language={language} onChange={handleLanguageChange} />
+          </div>
+          
+          <div className="flex items-center gap-1">
+            <ProjectToolbar showPreview={false} setShowPreview={function (show: boolean): void {
+              throw new Error("Function not implemented.")
+            } } saveProject={function (): void {
+              throw new Error("Function not implemented.")
+            } } handleDownload={function (): void {
+              throw new Error("Function not implemented.")
+            } } handleCopyToClipboard={function (): void {
+              throw new Error("Function not implemented.")
+            } } setShowDeleteDialog={function (show: boolean): void {
+              throw new Error("Function not implemented.")
+            } } />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <LanguageSelector language={language} onChange={handleLanguageChange} />
-          <Button size="sm" onClick={saveProject}>
-            <SaveIcon className="h-4 w-4 mr-1" />
-            Save
-          </Button>
-        </div>
-      </div>
 
-      {error && (
-        <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2">
-          {error}
-        </div>
-      )}
+        {error && (
+          <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2">
+            {error}
+          </div>
+        )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 flex-1 overflow-hidden">
-        <CodeEditor code={code} language={language} onChange={handleCodeChange} />
-        {renderPreview()}
+        <div className="grid sm:grid-cols-2 flex-1 overflow-hidden">
+          <CodeEditor code={code} language={language} onChange={handleCodeChange} />
+          
+          <div className="h-full">
+            <div className="bg-muted overflow-hidden h-full">
+              {renderPreview()}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

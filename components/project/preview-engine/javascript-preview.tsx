@@ -1,23 +1,20 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Button } from "./ui/button"
-import { PlayIcon, PauseIcon, RefreshCwIcon as RefreshIcon, TerminalIcon, LoaderIcon } from "lucide-react"
-import { Card } from "./ui/card"
-import { Progress } from "./ui/progress"
+import { Button } from "../../ui/button"
+import { PlayIcon, PauseIcon, RefreshCwIcon as RefreshIcon, TerminalIcon } from "lucide-react"
+import { Card } from "../../ui/card"
 
-interface PythonPreviewProps {
+interface JavaScriptPreviewProps {
   code: string
 }
 
-export function PythonPreview({ code }: PythonPreviewProps) {
+export function JavaScriptPreview({ code }: JavaScriptPreviewProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [isRunning, setIsRunning] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [consoleOutput, setConsoleOutput] = useState<Array<{ type: string; message: string }>>([])
   const [showConsole, setShowConsole] = useState(false)
-  const [pyodideLoading, setPyodideLoading] = useState(false)
-  const [loadingProgress, setLoadingProgress] = useState(0)
 
   useEffect(() => {
     if (isRunning) {
@@ -31,23 +28,20 @@ export function PythonPreview({ code }: PythonPreviewProps) {
     try {
       // Reset console output
       setConsoleOutput([])
-      setPyodideLoading(true)
-      setLoadingProgress(0)
 
-      // Create HTML content with Pyodide and the user's code
+      // Create a blob URL for the HTML content
       const htmlContent = `
       <!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
           <style>
             body {
               margin: 0;
               padding: 0;
               overflow: hidden;
-              background-color: rgb(20, 20, 20);
             }
             canvas {
               display: block;
@@ -58,16 +52,9 @@ export function PythonPreview({ code }: PythonPreviewProps) {
               padding: 10px;
               white-space: pre-wrap;
             }
-            .loading {
-              color: white;
-              font-family: sans-serif;
-              padding: 20px;
-              text-align: center;
-            }
           </style>
         </head>
         <body>
-          <div id="loading" class="loading">Loading Python environment...</div>
           <script>
             // Override console methods to capture output
             (function() {
@@ -101,53 +88,12 @@ export function PythonPreview({ code }: PythonPreviewProps) {
               console.info = captureConsole('info');
             })();
             
-            // Mouse tracking for Python code
-            window.mouseX = 0;
-            window.mouseY = 0;
-            document.addEventListener('mousemove', (e) => {
-              window.mouseX = e.clientX;
-              window.mouseY = e.clientY;
-            });
-
-            // Load Pyodide and run the code
-            async function main() {
-              try {
-                window.parent.postMessage({ type: 'pyodide-loading', progress: 10 }, '*');
-                const pyodide = await loadPyodide();
-                window.parent.postMessage({ type: 'pyodide-loading', progress: 50 }, '*');
-                
-                // Setup stdout/stderr capture
-                pyodide.setStdout({
-                  write: (text) => {
-                    console.log(text);
-                  }
-                });
-                
-                pyodide.setStderr({
-                  write: (text) => {
-                    console.error(text);
-                  }
-                });
-                
-                window.parent.postMessage({ type: 'pyodide-loading', progress: 70 }, '*');
-                
-                // Load numpy
-                await pyodide.loadPackage("numpy");
-                window.parent.postMessage({ type: 'pyodide-loading', progress: 90 }, '*');
-                
-                // Hide loading message
-                document.getElementById('loading').style.display = 'none';
-                window.parent.postMessage({ type: 'pyodide-loading', progress: 100 }, '*');
-                
-                // Run the Python code
-                await pyodide.runPythonAsync(\`${code}\`);
-              } catch (error) {
-                document.body.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
-                window.parent.postMessage({ type: 'error', message: error.message }, '*');
-              }
+            try {
+              ${code}
+            } catch (error) {
+              document.body.innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+              window.parent.postMessage({ type: 'error', message: error.message }, '*');
             }
-            
-            main();
           </script>
         </body>
       </html>
@@ -169,7 +115,6 @@ export function PythonPreview({ code }: PythonPreviewProps) {
     } catch (err) {
       console.error("Failed to update preview:", err)
       setError(err instanceof Error ? err.message : "Unknown error")
-      setPyodideLoading(false)
     }
   }
 
@@ -177,14 +122,8 @@ export function PythonPreview({ code }: PythonPreviewProps) {
     const handleMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === "error") {
         setError(event.data.message)
-        setPyodideLoading(false)
       } else if (event.data && event.data.type === "console") {
         setConsoleOutput((prev) => [...prev, { type: event.data.consoleType, message: event.data.message }])
-      } else if (event.data && event.data.type === "pyodide-loading") {
-        setLoadingProgress(event.data.progress)
-        if (event.data.progress === 100) {
-          setPyodideLoading(false)
-        }
       }
     }
 
@@ -210,11 +149,11 @@ export function PythonPreview({ code }: PythonPreviewProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="border-b p-2 flex items-center">
-        <Button size="sm" variant="outline" onClick={toggleRunning} className="mr-2" disabled={pyodideLoading}>
+        <Button size="sm" variant="outline" onClick={toggleRunning} className="mr-2">
           {isRunning ? <PauseIcon className="h-4 w-4" /> : <PlayIcon className="h-4 w-4" />}
           {isRunning ? "Pause" : "Run"}
         </Button>
-        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2" disabled={pyodideLoading}>
+        <Button size="sm" variant="outline" onClick={handleRefresh} className="mr-2">
           <RefreshIcon className="h-4 w-4 mr-1" />
           Refresh
         </Button>
@@ -223,16 +162,6 @@ export function PythonPreview({ code }: PythonPreviewProps) {
           Console {consoleOutput.length > 0 && `(${consoleOutput.length})`}
         </Button>
       </div>
-
-      {pyodideLoading && (
-        <div className="bg-background p-4 flex flex-col items-center justify-center">
-          <div className="flex items-center mb-2">
-            <LoaderIcon className="animate-spin h-5 w-5 mr-2" />
-            <span>Loading Python Environment...</span>
-          </div>
-          <Progress value={loadingProgress} className="w-full max-w-md" />
-        </div>
-      )}
 
       {error && (
         <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2 font-mono text-sm whitespace-pre-wrap">

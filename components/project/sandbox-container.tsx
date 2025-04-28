@@ -8,7 +8,6 @@ import { useProjects } from "@/hooks/use-projects"
 import { useSidebar } from "@/hooks/use-sidebar"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
-import { Toggle } from "../ui/toggle"
 import { 
   SaveIcon, 
   EyeIcon, 
@@ -101,83 +100,84 @@ export function EditorContainer() {
   }, [language, setCode])
 
   return (
-    <div className={cn("flex flex-col h-dvh w-full")}>
-      <div className="h-12 p-2 flex items-center">
-      </div>
-
-      {error && (
-        <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2">
-          {error}
-        </div>
-      )}
-
-      <div className="bg-muted/30 border-b p-2 mx-1 sm:mx-2 rounded-t-lg border flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-2 flex-1">
-          <span className="flex items-center justify-center w-6 h-6">
-            {language === "javascript" ? <SiJavascript className="h-4 w-4 text-yellow-400" /> : 
-             language === "python" ? <SiPython className="h-4 w-4 text-blue-500" /> : 
-             language === "glsl" ? <SiWebgl className="h-4 w-4 text-purple-500" /> : 
-             <CodeIcon className="h-4 w-4" />}
-          </span>
-          {isEditingName ? (
-            <Input 
-              value={projectName}
-              onChange={handleProjectNameChange}
-              onBlur={handleProjectNameBlur}
-              onKeyDown={handleProjectNameKeyDown}
-              className="h-8 w-auto ring-0 text-sm"
-              autoFocus
+    <div className="flex flex-col h-screen">
+      <div className="mt-12 mx-1 md:mx-2 rounded-t-lg border flex flex-col h-[calc(100dvh-3rem)]">
+        <div className="p-1 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="flex items-center justify-center w-5 h-5">
+              {language === "javascript" ? <SiJavascript className="h-3 w-3 text-yellow-400" /> : 
+               language === "python" ? <SiPython className="h-3 w-3 text-blue-500" /> : 
+               language === "glsl" ? <SiWebgl className="h-3 w-3 text-purple-500" /> : 
+               <CodeIcon className="h-3 w-3" />}
+            </span>
+            {isEditingName ? (
+              <Input 
+                value={projectName}
+                onChange={handleProjectNameChange}
+                onBlur={handleProjectNameBlur}
+                onKeyDown={handleProjectNameKeyDown}
+                className="h-7 w-auto ring-0 text-xs"
+                autoFocus
+              />
+            ) : (
+              <div 
+                className="h-7 px-2 py-1 flex items-center rounded-md cursor-pointer"
+                onClick={() => setIsEditingName(true)}
+                title="Click to edit project name"
+              >
+                <span className="text-xs font-medium truncate max-w-[160px]">{projectName}</span>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-1">
+            <ProjectToolbar 
+              showPreview={showPreview}
+              setShowPreview={setShowPreview}
+              saveProject={saveProject}
+              handleDownload={() => {
+                let filename = `${projectName || 'sketch'}.${language === "javascript" ? "js" : language === "python" ? "py" : "glsl"}`
+                const blob = new Blob([code], { type: 'text/plain' })
+                const url = URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = filename
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                URL.revokeObjectURL(url)
+              }}
+              handleCopyToClipboard={() => {
+                navigator.clipboard.writeText(code)
+                  .then(() => console.log('Code copied to clipboard'))
+                  .catch(err => console.error('Failed to copy code: ', err))
+              }}
+              setShowDeleteDialog={setShowDeleteDialog}
+              resetToDefault={handleResetToDefault}
             />
-          ) : (
-            <div 
-              className="h-8 px-3 py-1 flex items-center rounded-md cursor-pointer"
-              onClick={() => setIsEditingName(true)}
-              title="Click to edit project name"
-            >
-              <span className="text-sm font-medium truncate max-w-[200px]">{projectName}</span>
+          </div>
+        </div>
+
+        {error && (
+          <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-2 rounded m-2">
+            {error}
+          </div>
+        )}
+
+        <div className={cn(
+          "grid flex-1 overflow-hidden border-t",
+          showPreview ? "sm:grid-cols-2" : "grid-cols-1"
+        )}>
+          <CodeEditor code={code} language={language} onChange={handleCodeChange} />
+          
+          {showPreview && (
+            <div className="h-full">
+              <div className="bg-muted overflow-hidden h-full">
+                {renderPreview()}
+              </div>
             </div>
           )}
         </div>
-        
-        <ProjectToolbar 
-          showPreview={showPreview}
-          setShowPreview={setShowPreview}
-          saveProject={saveProject}
-          handleDownload={() => {
-            let filename = `${projectName || 'sketch'}.${language === "javascript" ? "js" : language === "python" ? "py" : "glsl"}`
-            const blob = new Blob([code], { type: 'text/plain' })
-            const url = URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.href = url
-            link.download = filename
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
-            URL.revokeObjectURL(url)
-          }}
-          handleCopyToClipboard={() => {
-            navigator.clipboard.writeText(code)
-              .then(() => console.log('Code copied to clipboard'))
-              .catch(err => console.error('Failed to copy code: ', err))
-          }}
-          setShowDeleteDialog={setShowDeleteDialog}
-          resetToDefault={handleResetToDefault}
-        />
-      </div>
-
-      <div className={cn(
-        "grid flex-1 overflow-hidden mx-1 sm:mx-2",
-        showPreview ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"
-      )}>
-        <CodeEditor code={code} language={language} onChange={handleCodeChange} />
-        
-        {showPreview && (
-          <div className="h-full border-r">
-            <div className="bg-muted overflow-hidden h-full">
-              {renderPreview()}
-            </div>
-          </div>
-        )}
       </div>
       
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

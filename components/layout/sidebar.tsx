@@ -239,7 +239,7 @@ export function Sidebar() {
           variant="ghost"
           size="icon"
           className={cn(
-            "fixed z-50 m-2 bg-background transition-all duration-300",
+            "fixed z-50 m-2 bg-transparent transition-all duration-300",
             isOpen ? "left-60" : "left-0"
           )}
           onClick={toggle}
