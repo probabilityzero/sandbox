@@ -1,22 +1,15 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { SiteHeader } from "@/components/layout/site-header"
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
-    <header className="border-b">
-      <div className="container flex sticky top-0 items-center justify-between h-14">
-        <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center">
-            <Image src="/cube-logo.svg" width={24} height={24} alt="Grid Sandbox Logo" />
-            <span className="font-medium ml-2">Sandbox</span>
-          </Link>
-          <span className="text-muted-foreground">/</span>
-          <span className="font-medium">Legal</span>
-        </div>
-        </div>
-      </header>
+      <SiteHeader 
+        showBreadcrumb={true} 
+        breadcrumbText="Legal" 
+      />
       
       <div className="container py-8">
         <div className="max-w-4xl mx-auto">

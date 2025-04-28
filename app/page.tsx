@@ -2,46 +2,12 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronRightIcon, CodeIcon, BrushIcon, ArrowRightIcon, ShapesIcon } from "lucide-react"
+import { SiteHeader } from "@/components/layout/site-header"
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-    <header className="border-b bg-background">
-      <div className="container flex sticky top-0 items-center justify-between h-14">
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 flex items-center justify-center">
-              <Image 
-                src="/cube-logo.svg" 
-                width={24} 
-                height={24} 
-                alt="Grid Sandbox Logo" 
-              />
-            </div>
-            <span className="font-medium text-foreground">Sandbox</span>
-          </div>
-          
-          <nav className="hidden md:flex gap-6">
-            <Link href="/explore" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Explore
-            </Link>
-            <Link href="/learn" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Learn
-            </Link>
-            <Link href="/contribute" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Contribute
-            </Link>
-          </nav>
-          
-          <div className="flex gap-3">
-            <Button variant="ghost" asChild>
-              <Link href="/auth?login">Dashboard</Link>
-            </Button>
-            <Button asChild className="py-1 my-1 px-4">
-              <Link href="/auth?signup">Get Started</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader showHomeNav={true} />
       
       <main className="flex-grow">
         <section className="py-20 md:py-32 relative overflow-hidden">
