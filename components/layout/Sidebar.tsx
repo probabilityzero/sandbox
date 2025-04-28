@@ -172,7 +172,7 @@ export function Sidebar() {
               <a 
                 href="/collections" 
                 onClick={(e) => handleNavClick(e, "/collections")}
-                className="text-sm py-1.5 hover:text-primary px-3 rounded-md flex items-center text-foreground gap-2"
+                className="text-sm py-1.5 hover:text-primary px-3 rounded-md flex items-center hover:bg-accent text-foreground gap-2"
               >
                 <Bookmark className="h-3.5 w-3.5" />
                 <span>Collections</span>
