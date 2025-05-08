@@ -19,7 +19,9 @@ import {
   LucideFolderCode,
   BookOpen,
   CompassIcon,
-  Bookmark
+  Bookmark,
+  Gamepad,
+  Gamepad2
 } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
 import { useSidebar } from "@/hooks/use-sidebar"
@@ -205,11 +207,11 @@ export function Sidebar() {
                 <span>Explore</span>
               </a>
                 <a 
-                  href="/browse"
-                  onClick={(e) => handleNavClick(e, "/browse")} 
+                  href="/games"
+                  onClick={(e) => handleNavClick(e, "/games")} 
                   className="text-sm py-1.5 hover:text-primary px-3 rounded-md hover:bg-accent text-foreground flex items-center gap-2"
                 >
-                  <CompassIcon className="h-3.5 w-3.5" />
+                  <Gamepad2 className="h-3.5 w-3.5" />
                   <span>Games</span>
                 </a>
                 <a 

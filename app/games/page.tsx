@@ -9,7 +9,7 @@ import Link from "next/link"
 import { ProjectCard, ProjectCardProps } from "@/components/SandboxCards"
 import { Header } from "@/components/layout/Header"
 
-const communityProjects: ProjectCardProps[] = [
+const communityGames: ProjectCardProps[] = [
   {
     id: 1,
     title: "Particle System",
@@ -160,40 +160,22 @@ export default function Community() {
   const [searchTerm, setSearchTerm] = useState("")
   
   const filteredProjects = searchTerm 
-    ? communityProjects.filter(p => 
+    ? communityGames.filter(p => 
         p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
         (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
       )
-    : communityProjects
+    : communityGames
 
   
   return (
     <div className="flex flex-col min-h-screen">
-      <Header title="Explore" />
+      <Header title="Games" />
       
-      <div className="container py-8 space-y-8">
-        {/* Icons and header */}
-        <div className="flex justify-center gap-4 mb-4">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded">
-            <span className="text-2xl">🎨</span>
-          </div>
-          <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded">
-            <span className="text-2xl">🔍</span>
-          </div>
-          <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded">
-            <span className="text-2xl">🧩</span>
-          </div>
-          <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded">
-            <span className="text-2xl">🔮</span>
-          </div>
-          <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded">
-            <span className="text-2xl">🚀</span>
-          </div>
-        </div>
-        
+      <div className="container py-8 pt-14 space-y-8">
+
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <h2 className="text-3xl md:text-4xl font-bold">
-            Discover creative coding examples from our community.
+            Discover creative games from the community.
           </h2>
           <p className="text-muted-foreground">
             Explore and learn from projects created by other creative coders. Fork any project to remix and make it your own.
